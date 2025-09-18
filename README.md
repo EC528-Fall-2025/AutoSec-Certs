@@ -3,7 +3,8 @@
 
 ## 1. Vision and Goals of the Project
 - **Vision Statement:**  
-  _Describe the final desired state of the project once complete._  
+  To build an automated and secure digital certificate management service tailored for highly regulated financial firms, ensuring compliance, reliability, and ease of use.  
+
 - **Key Goals:**  
   - Goal 1  
   - Goal 2  
