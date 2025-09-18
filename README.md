@@ -1,1 +1,1 @@
-# EC528-Fall-2025-template-repo
+# Automated and Secure Digital Certificate Management
