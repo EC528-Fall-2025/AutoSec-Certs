@@ -48,6 +48,7 @@
 
 ## 4. Solution Concept
 
+### 4.1 Certificate Lifecycle Pipeline
 ```mermaid
 flowchart TD
     A[User Request via ServiceNow] --> B[Generate CSR]
@@ -59,13 +60,13 @@ flowchart TD
     F --> H[Revocation if Compromised]
 ```
 
-### 4.1 Global Architectural Structure of the Project
+### 4.2 Global Architectural Structure of the Project
 - **High-Level Architecture:**  
   (Insert conceptual diagram or system architecture figure here)  
 - **Walkthrough Explanation:**  
   _Describe the main components, their interactions, and overall workflow._  
 
-### 4.2 Design Implications and Discussion
+### 4.3 Design Implications and Discussion
 - Rationale for design decisions  
 - How architecture supports scalability, maintainability, and user experience  
 
