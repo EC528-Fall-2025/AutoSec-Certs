@@ -26,6 +26,70 @@
   - Role B: key characteristics, needs, expectations  
   - Role C: key characteristics, needs, expectations  
 
+### Certificate Lifecycle Pipeline
+1. **Request**
+   - User submits a certificate request through **ServiceNow**.
+   - Request includes required metadata (application, environment, owner, etc.).
+
+   ➡️ **Output:** Certificate Signing Request (CSR) generated.
+
+---
+
+2. **Issuance**
+   - CSR is sent to the **Certificate Authority (CA)** (e.g., via **KeyFactor**).
+   - The CA signs the certificate and returns the certificate + private key.
+
+   ➡️ **Output:** Valid certificate and private key pair.
+
+---
+
+3. **Storage**
+   - The issued certificate and private key are securely stored in **HashiCorp Vault**.
+   - Vault enforces **AWS IAM-based access control** for applications and services.
+
+   ➡️ **Output:** Certificate and private key available in Vault with restricted access.
+
+---
+
+4. **Application Use**
+   - Applications retrieve certificates and private keys securely from **Vault**.
+   - Certificates are used for:
+     - **Encryption (TLS/SSL)**  
+     - **Authentication (mutual TLS, service identity)**  
+
+   ➡️ **Output:** Application runs with valid TLS certificates.
+
+---
+
+5. **Renewal / Rotation**
+   - Before certificate expiration, Vault or KeyFactor initiates **automatic renewal**.
+   - New certificate + key pair issued and stored in Vault.
+   - Application reloads the new certificate without downtime.
+
+   ➡️ **Output:** Continuous certificate availability without expiry risk.
+
+---
+
+6. **Revocation**
+   - If a certificate is compromised or no longer needed:
+     - Revoke certificate via **KeyFactor CA**.
+     - Update Vault to mark certificate invalid and remove access.
+
+   ➡️ **Output:** Revoked certificate cannot be used in production.
+
+---
+
+### End-to-End Pipeline Flow
+
+```mermaid
+flowchart TD
+    A[ServiceNow Request] --> B[Generate CSR]
+    B --> C[KeyFactor CA Issues Certificate]
+    C --> D[Store in HashiCorp Vault]
+    D --> E[Application Secure Access via IAM]
+    E --> F[Use for TLS/Authentication]
+    F --> G[Renewal/Rotation before Expiry]
+    F --> H[Revocation if Compromised]
 
 ---
 
@@ -38,6 +102,7 @@
 - **Out-of-Scope Features:**  
   - Feature X  
   - Feature Y  
+
 
 
 ---
