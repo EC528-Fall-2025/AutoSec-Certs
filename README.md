@@ -10,7 +10,7 @@
   - Goal 2  
   - Goal 3  
 
-## Project Priorities (P0–P3)
+### Project Priorities (P0–P3)
 
 | Priority | Description | Status |
 |----------|-------------|--------|
