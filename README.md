@@ -10,7 +10,14 @@
   - Goal 2  
   - Goal 3  
 
+## Project Priorities (P0–P3)
 
+| Priority | Description | Status |
+|----------|-------------|--------|
+| **P0 (Must-Have: Core MVP)** | - Automate certificate requests and approvals through ServiceNOW.<br>- Ensure certificates and private keys are securely generated and stored (via Keyfactor + HashiCorp Vault / GCP Secret Manager). | Core requirements |
+| **P1 (High Priority: Security & Access Control)** | - Provide controlled access to certificates through HashiCorp Vault with IAM-based validation (using Google Cloud IAM roles or Workload Identity Federation). | Core requirements |
+| **P2 (Future: Lifecycle Enhancements)** | - Support seamless certificate lifecycle management, including issuance, renewal, rotation, and revocation (e.g., Cloud Scheduler + Vault/Keyfactor APIs). | Future work |
+| **P3 (Future: Reliability & Compliance)** | - Minimize operational risks of expired or compromised certificates in production systems.<br>- Implement monitoring, logging, and auditing (Google Cloud Monitoring, ServiceNOW logs, Vault audit logs). | Future work |
 ---
 
 ## 2. Users / Personas of the Project
