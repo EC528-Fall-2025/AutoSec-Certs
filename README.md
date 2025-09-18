@@ -54,7 +54,7 @@ flowchart TD
     B --> C[KeyFactor CA Issues Certificate]
     C --> D[Store in HashiCorp Vault]
     D --> E[Application Access via Vault IAM]
-    E --> F[Use for TLS & Authentication]
+    E --> F[Use for TLS and Authentication]
     F --> G[Automatic Renewal / Rotation]
     F --> H[Revocation if Compromised]
 ```
