@@ -2,15 +2,15 @@
 
 
 ## 1. Vision and Goals of the Project
-- **Vision Statement:**  
+- ### 1.1 Vision Statement
   To build an automated, secure, and scalable digital certificate management system tailored for highly regulated financial firms, ensuring compliance, reliability, and ease of use. This system will streamline the entire PKI lifecycle from certificate creation to renewal.
 
-- **Key Goals:**  
+- ### 1.2 Key Goals  
   - Automated: Minimize need for manual input/direction to speed up delivery.  
   - Secure: Ensure private keys are securely generated, stored, and accessed only by those with authorization.
   - Intuitive: Users should be able to request and manage certificates via a user-friendly ServiceNow form.
 
-### Project Priorities (P0–P3)
+### 1.3 Project Priorities (P0–P3)
 
 | Priority | Description | Status |
 |----------|-------------|--------|
