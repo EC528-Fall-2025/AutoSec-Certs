@@ -21,10 +21,26 @@
 ---
 
 ## 2. Users / Personas of the Project
-- **Primary User Roles:**  
+### 2.1 Primary User Roles:**  
   - Application Teams: Will want to request and retrieve certificates and rely on automated renewal of certificates to avoid outages.  
   - Security Teams: Can manage and monitor certificate issuance, review and approve requests, and monitor activity logs. 
 
+### 2.2 Team Roles (5 Members)  
+- **Backend Engineer (Certificates & Vault Integration)**  
+  - Implement CSR generation, certificate issuance, and secure storage in Vault.  
+
+- **Platform Engineer (Cloud & IAM Integration)**  
+  - Configure IAM roles, enforce access policies, set up cloud infrastructure (AWS).  
+
+- **Frontend / ServiceNow Engineer**  
+  - Build ServiceNow request form, integrate approval workflow with backend APIs.  
+
+- **DevOps Engineer (CI/CD & Automation)**  
+  - Implement CI/CD pipeline, automated certificate renewal and rotation, deployment automation.  
+
+- **Security Engineer (Audit & Compliance)**  
+  - Ensure certificate policies follow org standards.  
+  - Monitor issuance and access logs, set up alerting for anomalies.  
 
 ---
 
@@ -35,7 +51,7 @@
 - Application access to certificates and private keys from **Vault**, validated through **IAM Roles**  
 
 ### Out-of-Scope Features  
--  
+- **Manual certificate management** (outside of the automated workflow)  
 -  
 
 
