@@ -23,7 +23,7 @@
 ## 2. Users / Personas of the Project
 - **Primary User Roles:**  
   - Application Teams: Will want to request and retrieve certificates and rely on automated renewal of certificates to avoid outages.  
-  - Role B: key characteristics, needs, expectations  
+  - Security Teams: Can manage and monitor certificate issuance, review and approve requests, and monitor activity logs. 
   - Role C: key characteristics, needs, expectations  
 
 
@@ -64,7 +64,27 @@ flowchart TD
 - **High-Level Architecture:**  
   (Insert conceptual diagram or system architecture figure here)  
 - **Walkthrough Explanation:**  
-  _Describe the main components, their interactions, and overall workflow._  
+#### Certificate Lifecycle
+
+A typical certificate lifecycle consists of the following stages:
+
+1. **Request** – Generate a key pair and submit a Certificate Signing Request (CSR) to a Certificate Authority (CA).  
+2. **Issue** – The CA signs the CSR and returns the certificate.  
+3. **Application Use** – The application uses the certificate for encryption (TLS/SSL) and authentication.  
+4. **Renew** – The certificate must be replaced with a new one before it expires.  
+5. **Revoke** – The certificate can be canceled if compromised or no longer needed.
+
+#### How This Applies to Our Project
+
+Our project automates the above lifecycle using cloud-native tooling:
+
+- **Request** – User submits a certificate request via **ServiceNow**.  
+- **Issue** – Certificate and private key are generated using **Keyfactor** (or AWS PCA).  
+- **Store** – The issued certificate and private key are securely stored in **HashiCorp Vault**.  
+- **Access** – Applications retrieve the certificate and key from Vault, validated via **AWS IAM roles**.  
+- **Rotate** – New certificates are automatically issued before expiration and updated in Vault.
+
+
 
 ### 4.3 Design Implications and Discussion
 - Rationale for design decisions  
@@ -79,6 +99,7 @@ flowchart TD
   - [ ] Certificates and private keys successfully issued by certificate authorities
   - [ ] Certiifcate and private keys are stored securely in Vault
   - [ ] Only authorized applications can access certificates from Vault
+  - [ ] Activity logs are maintained so suspicious events can be spotted
 - **Stretch Goals:**  
   - [ ] Automated renewal/rotation of certificates to avoid downtime
   - [ ] Extended feature B  
