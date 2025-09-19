@@ -64,14 +64,14 @@
 ```mermaid
 flowchart TD
   A[User Request via ServiceNow] --> B[Generate CSR]
-  B --> X1[Backend Service (Java + Keytool)]
-  X1 --> X2[Generate Keypair & CSR]
+  B --> X1[Backend Service Java Keytool]
+  X1 --> X2[Generate Keypair and CSR]
   X2 --> X3[Submit CSR to CA]
-  X3 --> C[KeyFactor / AWS PCA Issues Certificate]
+  X3 --> C[KeyFactor or AWS PCA Issues Certificate]
   C --> D[Store in HashiCorp Vault]
   D --> E[Application Access via Vault IAM]
   E --> F[Use for TLS and Authentication]
-  F --> G[Automatic Renewal / Rotation]
+  F --> G[Automatic Renewal or Rotation]
   F --> H[Revocation if Compromised]
 ```
 
