@@ -3,12 +3,12 @@
 
 ## 1. Vision and Goals of the Project
 - **Vision Statement:**  
-  To build an automated and secure digital certificate management service tailored for highly regulated financial firms, ensuring compliance, reliability, and ease of use.  
+  To build an automated, secure, and scalable digital certificate management system tailored for highly regulated financial firms, ensuring compliance, reliability, and ease of use. This system will streamline the entire PKI lifecycle from certificate creation to renewal.
 
 - **Key Goals:**  
-  - Goal 1  
-  - Goal 2  
-  - Goal 3  
+  - Automated: Minimize need for manual input/direction to speed up delivery.  
+  - Secure: Ensure private keys are securely generated, stored, and accessed only by those with authorization.
+  - Intuitive: Users should be able to request and manage certificates via a user-friendly ServiceNow form.
 
 ### Project Priorities (P0–P3)
 
@@ -22,12 +22,8 @@
 
 ## 2. Users / Personas of the Project
 - **Primary User Roles:**  
-  - Role A: key characteristics, needs, expectations  
-  - Role B: key characteristics, needs, expectations  
-  - Role C: key characteristics, needs, expectations  
-
-
-
+  - Application Teams: Will want to request and retrieve certificates and rely on automated renewal of certificates to avoid outages.  
+  - Security Teams: Can manage and monitor certificate issuance, review and approve requests, and monitor activity logs. 
 
 
 ---
@@ -61,24 +57,44 @@ flowchart TD
 ```
 
 ### 4.2 Global Architectural Structure of the Project
-- **High-Level Architecture:**  
-  (Insert conceptual diagram or system architecture figure here)  
-- **Walkthrough Explanation:**  
-  _Describe the main components, their interactions, and overall workflow._  
+#### Certificate Lifecycle
+
+A typical certificate lifecycle consists of the following stages:
+
+1. **Request** – Generate a key pair and submit a Certificate Signing Request (CSR) to a Certificate Authority (CA).  
+2. **Issue** – The CA signs the CSR and returns the certificate.  
+3. **Application Use** – The application uses the certificate for encryption (TLS/SSL) and authentication.  
+4. **Renew** – The certificate must be replaced with a new one before it expires.  
+5. **Revoke** – The certificate can be canceled if compromised or no longer needed.
+
+#### How This Applies to Our Project
+
+Our project automates the above lifecycle using cloud-native tooling:
+
+- **Request** – User submits a certificate request via **ServiceNow**.  
+- **Issue** – Certificate and private key are generated using **Keyfactor** (or AWS PCA).  
+- **Store** – The issued certificate and private key are securely stored in **HashiCorp Vault**.  
+- **Access** – Applications retrieve the certificate and key from Vault, validated via **AWS IAM roles**.  
+- **Rotate** – New certificates are automatically issued before expiration and updated in Vault.
+
+
 
 ### 4.3 Design Implications and Discussion
 - Rationale for design decisions  
-- How architecture supports scalability, maintainability, and user experience  
+- How architecture supports scalability, maintainability, and user experience
+- Security is the first priority: Private keys are never exposed outside of Vault and are accessed only by authenticated, authorized, entities.
 
 ---
 
 ## 5. Acceptance Criteria
 - **Minimum Acceptance Criteria:**  
-  - [ ] The system shall ...  
-  - [ ] The feature shall ...  
+  - [ ] Users can submit cerficiate requests with ServiceNow
+  - [ ] Certificates and private keys successfully issued by certificate authorities
+  - [ ] Certiifcate and private keys are stored securely in Vault
+  - [ ] Only authorized applications can access certificates from Vault
+  - [ ] Activity logs are maintained so suspicious events can be spotted
 - **Stretch Goals:**  
-  - [ ] Advanced capability A  
-  - [ ] Extended feature B  
+  - [ ] Automated renewal/rotation of certificates to avoid downtime
 
 ---
 
