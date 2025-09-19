@@ -57,9 +57,6 @@ flowchart TD
 ```
 
 ### 4.2 Global Architectural Structure of the Project
-- **High-Level Architecture:**  
-  (Insert conceptual diagram or system architecture figure here)  
-- **Walkthrough Explanation:**  
 #### Certificate Lifecycle
 
 A typical certificate lifecycle consists of the following stages:
