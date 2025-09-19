@@ -73,8 +73,15 @@ flowchart TD
     F --> H[Revocation if Compromised]
 ```
 
+#### 4.1.1 Backend Responsibilities
+
+- Generate key pair (public/private key)  
+- Securely store the private key  
+- Create a CSR (Certificate Signing Request)  
+- Submit CSR to the Certificate Authority (CA) and receive the certificate  
+- Store both the certificate and private key in HashiCorp Vault  
 ### 4.2 Global Architectural Structure of the Project
-#### Certificate Lifecycle
+#### 4.2.1 Certificate Lifecycle
 
 A typical certificate lifecycle consists of the following stages:
 
@@ -84,7 +91,7 @@ A typical certificate lifecycle consists of the following stages:
 4. **Renew** – The certificate must be replaced with a new one before it expires.  
 5. **Revoke** – The certificate can be canceled if compromised or no longer needed.
 
-#### How This Applies to Our Project
+#### 4.2.2 How This Applies to Our Project
 
 Our project automates the above lifecycle using cloud-native tooling:
 
