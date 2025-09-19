@@ -24,10 +24,6 @@
 - **Primary User Roles:**  
   - Application Teams: Will want to request and retrieve certificates and rely on automated renewal of certificates to avoid outages.  
   - Security Teams: Can manage and monitor certificate issuance, review and approve requests, and monitor activity logs. 
-  - Role C: key characteristics, needs, expectations  
-
-
-
 
 
 ---
@@ -102,7 +98,6 @@ Our project automates the above lifecycle using cloud-native tooling:
   - [ ] Activity logs are maintained so suspicious events can be spotted
 - **Stretch Goals:**  
   - [ ] Automated renewal/rotation of certificates to avoid downtime
-  - [ ] Extended feature B  
 
 ---
 
