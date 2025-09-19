@@ -64,7 +64,7 @@
 ```mermaid
 flowchart TD
     A[User Request via ServiceNow] --> B[Generate CSR]
-    B --> X[Backend Service (Java + Keytool)\nGenerate CSR & Submit to CA]
+    B --> X[Backend Service (Java + Keytool)<br/>Generate CSR & Submit to CA]
     X --> C[KeyFactor / AWS PCA Issues Certificate]
     C --> D[Store in HashiCorp Vault]
     D --> E[Application Access via Vault IAM]
