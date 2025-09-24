@@ -63,16 +63,14 @@
 ### 4.1 Certificate Lifecycle Pipeline
 ```mermaid
 flowchart TD
-  A[User Request via ServiceNow] --> B[Generate CSR]
-  B --> X1[Backend Service Java Keytool]
-  X1 --> X2[Generate Keypair and CSR]
-  X2 --> X3[Submit CSR to CA]
-  X3 --> C[KeyFactor or AWS PCA Issues Certificate]
-  C --> D[Store in HashiCorp Vault]
-  D --> E[Application Access via Vault IAM]
-  E --> F[Use for TLS and Authentication]
-  F --> G[Automatic Renewal or Rotation]
-  F --> H[Revocation if Compromised]
+  A[User Request via ServiceNow] --> B[Vault Generates Keypair and CSR]
+  B --> C[Submit CSR to CA]
+  C --> D[KeyFactor or AWS PCA Issues Certificate]
+  D --> E[Store in HashiCorp Vault]
+  E --> F[Application Access via Vault IAM]
+  F --> G[Use for TLS and Authentication]
+  G --> H[Automatic Renewal or Rotation]
+  G --> I[Revocation if Compromised]
 ```
 
 <!-- #### 4.1.1 Backend Responsibilities
