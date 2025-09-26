@@ -22,8 +22,6 @@ The FastAPI backend focuses solely on **certificate lifecycle management**:
 - **Audit Logging**
   - Track certificate requests, issuance, and revocation events
 
-> All non-certificate functionality has been migrated to ServiceNow.
-
 ---
 
 ## 🟢 ServiceNow Responsibilities 
@@ -44,8 +42,6 @@ ServiceNow now handles the following features:
   - Generate reports and track KPIs
 - **Permissions & Access Control**
   - Role-based access management for users and applications
-
-> FastAPI no longer manages these functions.
 
 ---
 
