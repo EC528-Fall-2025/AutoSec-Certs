@@ -1,84 +1,51 @@
-## Backend (Python + FastAPI)
+# Certificate Management Backend
 
-The backend service will be built using **FastAPI** to provide REST/gRPC APIs for certificate lifecycle management.  
-It acts as the central orchestrator that connects all components:
+This repository contains the backend services for the Certificate Management System.  
+Responsibilities are divided between **ServiceNow** and **FastAPI** :
 
-- **Core Functions**:
-  - Handle certificate requests (issue, renew, revoke).  
-  - Communicate with HashiCorp Vault for secure storage and retrieval.  
-  - Integrate with external Certificate Authorities 
-  - Expose APIs to ServiceNow or self-service portals.  
-  - Maintain audit logs and request status in the database.
+## 🟢 FastAPI Responsibilities 
 
-- **Tech Stack**:
-  - Python + FastAPI (API server)  
-  - PostgreSQL / MongoDB (persistence)  
-  - Redis (caching and sessions)  
-  - Deployed on Cloud Run with CI/CD automation  
+The FastAPI backend focuses solely on **certificate lifecycle management**:
+
+- **Certificate Operations**
+  - Issue, renew, and revoke certificates
+  - Track request and certificate metadata
+- **CA Integration**
+  - Submit CSR to Certificate Authorities (KeyFactor or AWS PCA)
+  - Receive issued certificates
+- **Vault Integration**
+  - Generate keypairs and CSR in Vault
+  - Store certificates and private keys securely
+  - Provide certificate access to applications via Vault IAM
+- **Automatic Renewal & Rotation**
+  - Periodically check certificate validity and renew if needed
+- **Audit Logging**
+  - Track certificate requests, issuance, and revocation events
+
+> All non-certificate functionality has been migrated to ServiceNow.
 
 ---
 
-## System Architecture Diagram
-# Certificate Management System Architecture
+## 🟢 ServiceNow Responsibilities 
 
-## System Flow Overview
+ServiceNow now handles the following features:
 
-```
-┌─────────────────────┐
-│ User/ServiceNow     │
-│ Portal              │
-└──────────┬──────────┘
-           │
-           ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    FastAPI Backend                              │
-│                (Orchestrator & API Gateway)                     │
-│                                                                 │
-│  ┌─────────────────────┐    ┌──────────────────────────────┐    │
-│  │ 1. Receive &        │    │ 2. Auth & Authorization      │    │
-│  │    Validate Request │───▶│                              │    │
-│  └─────────────────────┘    └──────────────┬───────────────┘    │
-│                                            │                    │
-│  ┌─────────────────────┐    ┌──────────────▼───────────────┐    │
-│  │ 4. Submit CSR       │    │ 3. Generate CSR via          │    │
-│  │    to CA            │◀───┤    Vault API                 │    │
-│  └──────────┬──────────┘    └──────────────────────────────┘    │
-│             │                                                   │
-│  ┌──────────▼──────────┐    ┌──────────────────────────────┐    │
-│  │ 5. Store certs in   │    │ 6. Cache status &            │    │
-│  │    Vault & Persist  │───▶│    quick queries (Redis)     │    │
-│  │    metadata to DB   │    └──────────────────────────────┘    │
-│  └──────────┬──────────┘                                        │
-│             │                                                   │
-│  ┌──────────▼──────────┐    ┌──────────────────────────────┐    │
-│  │ 7. Audit & Logging  │    │ 8. Notify ServiceNow/        │    │
-│  │                     │───▶│    Caller                    │    │
-│  └─────────────────────┘    └──────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────────┘
-           │                              │
-           ▼                              ▼
-┌─────────────────────┐        ┌─────────────────────┐
-│ Certificate         │        │ ServiceNow          │
-│ Authority           │        │ Notification        │
-│ (KeyFactor/AWS ACM) │        │ System              │
-└─────────────────────┘        └─────────────────────┘
-           │
-           ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                     Storage Layer                               │
-│                                                                 │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  │
-│  │ HashiCorp Vault │  │ PostgreSQL/     │  │ Audit Logs      │  │
-│  │ (Certificates)  │  │ MongoDB         │  │ Storage         │  │
-│  │                 │  │ (Metadata)      │  │                 │  │
-│  └─────────────────┘  └─────────────────┘  └─────────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
-           ▲
-           │
-┌─────────────────────┐
-│ Applications        │
-│ (Fetch certs via    │
-│ Vault Agent or      │
-│ FastAPI calls)      │
-└─────────────────────┘
-```
+- **User Management**
+  - Registration, authentication, and permission management
+- **Request Management**
+  - Submit and track certificate requests
+- **Approval Workflow**
+  - Automated or manual approvals
+- **Workflow Engine**
+  - Orchestration of business processes
+- **User Interface**
+  - Self-service portal for end users
+- **Reporting & Analytics**
+  - Generate reports and track KPIs
+- **Permissions & Access Control**
+  - Role-based access management for users and applications
+
+> FastAPI no longer manages these functions.
+
+---
+
