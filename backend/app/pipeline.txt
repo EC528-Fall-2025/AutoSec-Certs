@@ -1,0 +1,5 @@
+	•	routes.py：只负责 FastAPI 的 API 层，接收请求 → 调用 services 模块 → 返回响应。
+	•	services.py / vault_service.py / ca_service.py：封装核心业务逻辑，调用 Vault / CA API，处理证书生命周期。
+	•	utils.py：放通用函数，例如 PEM 文件处理、时间计算、日志格式化。
+	•	tasks.py：放定时任务逻辑，比如自动续期、轮询检查证书状态。
+	•	models.py：Pydantic 模型 + ORM 表，统一管理数据结构。
