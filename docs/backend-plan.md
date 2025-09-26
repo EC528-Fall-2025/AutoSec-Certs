@@ -19,33 +19,66 @@ It acts as the central orchestrator that connects all components:
 ---
 
 ## System Architecture Diagram
-flowchart LR
-    U[User / ServiceNow Portal] --> Start[Receive & validate request]
+# Certificate Management System Architecture
 
-    subgraph FastAPI["FastAPI Backend<br>(Orchestrator & API Gateway)"]
-        direction TB
-        Start[Receive & validate request]
-        Auth["Auth & Authorization<br>(JWT, IAM, RBAC)"]
-        CSR[Generate CSR via Vault API]
-        Submit[Submit CSR to CA]
-        Vault[HashiCorp Vault]
-        Store[Store certs in Vault<br>Persist metadata to DB]
-        Cache[Cache status & quick queries<br>(Redis)]
-        Audit[Audit & Logging]
-        Notify[Notify ServiceNow / Caller]
-    end
+## System Flow Overview
 
-    Start --> Auth
-    Auth --> CSR
-    CSR --> Submit
-    Submit --> CA[Certificate Authority<br>(KeyFactor / AWS ACM)]
-    CSR --> Vault
-    Vault --> Store
-    Submit --> Store
-    Store --> DB[(PostgreSQL / MongoDB)]
-    Store --> Audit
-    Start --> Cache
-    Cache --> Store
-    Notify --> SN[ServiceNow]
-    Audit --> Logs[(Audit Logs)]
-    Apps[Applications] -->|Fetch certs via Vault Agent<br>or call FastAPI| Vault
+```
+┌─────────────────────┐
+│ User/ServiceNow     │
+│ Portal              │
+└──────────┬──────────┘
+           │
+           ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    FastAPI Backend                              │
+│                (Orchestrator & API Gateway)                     │
+│                                                                 │
+│  ┌─────────────────────┐    ┌──────────────────────────────┐   │
+│  │ 1. Receive &        │    │ 2. Auth & Authorization      │   │
+│  │    Validate Request │───▶│              
+│  └─────────────────────┘    └──────────────┬───────────────┘   │
+│                                            │                   │
+│  ┌─────────────────────┐    ┌──────────────▼───────────────┐   │
+│  │ 4. Submit CSR       │    │ 3. Generate CSR via          │   │
+│  │    to CA            │◀───┤    Vault API                 │   │
+│  └──────────┬──────────┘    └──────────────────────────────┘   │
+│             │                                                  │
+│  ┌──────────▼──────────┐    ┌──────────────────────────────┐   │
+│  │ 5. Store certs in   │    │ 6. Cache status &            │   │
+│  │    Vault & Persist  │───▶│    quick queries (Redis)     │   │
+│  │    metadata to DB   │    └──────────────────────────────┘   │
+│  └──────────┬──────────┘                                       │
+│             │                                                  │
+│  ┌──────────▼──────────┐    ┌──────────────────────────────┐   │
+│  │ 7. Audit & Logging  │    │ 8. Notify ServiceNow/        │   │
+│  │                     │───▶│    Caller                    │   │
+│  └─────────────────────┘    └──────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+           │                              │
+           ▼                              ▼
+┌─────────────────────┐        ┌─────────────────────┐
+│ Certificate         │        │ ServiceNow          │
+│ Authority           │        │ Notification        │
+│ (KeyFactor/AWS ACM) │        │ System              │
+└─────────────────────┘        └─────────────────────┘
+           │
+           ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                     Storage Layer                               │
+│                                                                 │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐ │
+│  │ HashiCorp Vault │  │ PostgreSQL/     │  │ Audit Logs      │ │
+│  │ (Certificates)  │  │ MongoDB         │  │ Storage         │ │
+│  │                 │  │ (Metadata)      │  │                 │ │
+│  └─────────────────┘  └─────────────────┘  └─────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+           ▲
+           │
+┌─────────────────────┐
+│ Applications        │
+│ (Fetch certs via    │
+│ Vault Agent or      │
+│ FastAPI calls)      │
+└─────────────────────┘
+```
