@@ -30,7 +30,7 @@
   - Implement CSR generation, certificate issuance, and secure storage in Vault.  
 
 - **Platform Engineer (Cloud & IAM Integration)**  
-  - Configure IAM roles, enforce access policies, set up cloud infrastructure (AWS).  
+  - Configure IAM roles, enforce access policies, set up cloud infrastructure.  
 
 - **Frontend / ServiceNow Engineer**  
   - Build ServiceNow request form, integrate approval workflow with backend APIs.  
