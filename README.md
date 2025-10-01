@@ -149,17 +149,15 @@ Our project automates the above lifecycle using cloud-native tooling:
 - [Video](.assets/video2710124989.mp4)  
 - [Slides](https://docs.google.com/presentation/d/1PIYamKVhi-m9k4DFpzvKhFeDj9LKj33SVk3x0rdOPUo/edit?usp=sharing)
 
-  ## Sprint 2:(10/2 - 10/15)
+## Sprint 2:Workflow & Integration Foundations (10/2 - 10/15)
 
-- **Planned Iterations:**  
-  - Iteration 1: (Features / User Stories)  
-  - Iteration 2: (Features / User Stories)  
-  - Iteration 3: (Features / User Stories)  
-
-- **Higher-Level Details for the First Iteration:**  
-  - User Story 1  
-  - User Story 2  
-  - User Story 3  
+Goals: Establish core workflows for certificate lifecycle management, focusing on request, approval, issuance, and storage.
+-	Design and implement ServiceNow workflow for certificate requests and approvals.
+-	Prototype Vault integration for keypair generation, CSR submission, and certificate storage.
+-	Document certificate renewal and rotation flow (including CSR regeneration and switchover period).
+-	Add admin user persona to capture monitoring, auditing, and operational needs.
+-	Update system architecture diagrams to reflect detailed flows.
+-	Begin testing workflow execution end-to-end (manual triggers).
 
 ---
 
