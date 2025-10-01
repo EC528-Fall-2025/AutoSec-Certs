@@ -45,3 +45,44 @@ ServiceNow now handles the following features:
 
 ---
 
+
+# Backend Integration Memo  
+
+This project requires configuration for both **HashiCorp Vault** and **ServiceNow** in order for the backend (`FastAPI`) to work properly.  
+
+---
+
+## 1. HashiCorp Vault Requirements  
+
+- **Vault Address (`VAULT_ADDR`)**  
+  - A Vault instance must already be running and accessible at `http://localhost:8200` or another configured URL.  
+  - For team use, **Vault should be deployed centrally** (e.g., on one teammate’s machine, a Docker container, or a VM in the cloud).  
+
+- **Vault Token (`VAULT_TOKEN`)**  
+  - In development mode: you can use the `root` or `dev` token generated when Vault is initialized.  
+  - In production: use proper **authentication methods** (Userpass, OIDC, Kubernetes, AppRole, etc.) to generate an **application-specific token**, not the root token.  
+
+- **PKI Path (`VAULT_PKI_PATH`)**  
+  - The **PKI secrets engine** must be enabled at the given path, for example:  
+    ```bash
+    vault secrets enable -path=pki pki
+    ```  
+  - A CA and at least one role should be configured (e.g., `vault write pki/roles/my-role ...`) so that the backend can issue certificates.  
+
+---
+
+## 2. ServiceNow Requirements  
+
+- **Instance URL (`SERVICENOW_INSTANCE`)**  
+  - Provided by the ServiceNow administrator (e.g., `https://dev12345.service-now.com`).  
+
+- **Account Credentials**  
+  - Either username + password (for Basic Auth), or an API Key / OAuth token.  
+  - The account must have permissions to **call ServiceNow REST APIs**.  
+
+- **API Permissions**  
+  - The account must be granted **read/write permissions** on the target table (e.g., `pm_project` or a custom table like `x_custom_project`).  
+  - The ServiceNow administrator must ensure the **Table API** (or custom API) is enabled.  
+
+---
+
