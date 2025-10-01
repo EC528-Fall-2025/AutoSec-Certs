@@ -26,8 +26,9 @@
   - Security Teams: Can manage and monitor certificate issuance, review and approve requests, and monitor activity logs. 
 
 ### 2.2 Team Roles (5 Members)  
-- **Backend Engineer (Certificates & Vault Integration)**  
-  - Implement CSR generation, certificate issuance, and secure storage in Vault.  
+- **Backend Engineer (Certificates & Vault Integration)** @[Siyuan Jing](https://github.com/ChingSsuyuan)  
+  - Responsible for the end-to-end certificate lifecycle: CSR generation, certificate issuance, and secure storage in Vault.  
+  - Act as the bridge between Vault and ServiceNow, ensuring seamless integration and data flow between both systems.  
 
 - **Platform Engineer (Cloud & IAM Integration)**  
   - Configure IAM roles, enforce access policies, set up cloud infrastructure.  
