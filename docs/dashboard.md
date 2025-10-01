@@ -7,7 +7,7 @@
   - **Approved**
   - **Issued & Stored in Vault**
   - **Auto-renewal in progress**
-  - **Revoked** (if applicable)
+  - **Revoked** 
 
 ### 1.2 Mock UI Elements
 - **Status Timeline**: "Request Submitted → Approved → Issued → Stored → Active".  
