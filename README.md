@@ -157,7 +157,7 @@ Goals: Establish core workflows for certificate lifecycle management, focusing o
 -	Document certificate renewal and rotation flow (including CSR regeneration and switchover period).
 -	Add admin user persona to capture monitoring, auditing, and operational needs.
 -	Update system architecture diagrams to reflect detailed flows.
--	Begin testing workflow execution end-to-end (manual triggers).
+-	Begin testing workflow execution end-to-end.
 
 ---
 
