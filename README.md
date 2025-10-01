@@ -146,7 +146,7 @@ Our project automates the above lifecycle using cloud-native tooling:
 - Developed a clear and detailed project description.  
 - Outlined the workflow pipeline for the system.  
 - Began experimentation with the ServiceNow Developer Program environment.
-- [Video](link-to-video)  
+- [Video](.assets/video2710124989.mp4)  
 - [Slides](https://docs.google.com/presentation/d/1PIYamKVhi-m9k4DFpzvKhFeDj9LKj33SVk3x0rdOPUo/edit?usp=sharing)
 
   ## Sprint 2:(10/2 - 10/15)
