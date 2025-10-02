@@ -90,7 +90,7 @@ end
   G --> H
   G --> I
 ```
-
+[To find detailed flowchart](docs/Flowchart.md)
 <!-- #### 4.1.1 Backend Responsibilities
 
 - Generate key pair (public/private key)  
