@@ -1,3 +1,4 @@
 burndown-app/
 node_modules/
 .DS_Store
+docs/Flowchart.md
