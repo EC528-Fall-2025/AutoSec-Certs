@@ -161,7 +161,7 @@ flowchart LR
             <h2 class="section-title">2. Certificate Issuance Process</h2>
             <p class="section-description">Backend coordinates with Vault and AWS PCA to generate and sign the certificate.</p>
             <div class="mermaid">
-flowchart LR
+flowchart TD
     A[Backend vault.py] --> B[Authenticate to Vault<br/>POST /v1/auth/approle/login<br/>role_id + secret_id]
     B --> C[Receive X-Vault-Token]
     C --> D[Call Vault PKI<br/>POST /v1/pki/intermediate/generate/internal<br/>Headers: X-Vault-Token]
@@ -189,7 +189,7 @@ flowchart LR
             <h2 class="section-title">3. Certificate Storage & Access</h2>
             <p class="section-description">Certificate is stored in Vault and made available to applications through the backend API.</p>
             <div class="mermaid">
-flowchart LR
+flowchart TD
     A[Backend receives<br/>signed certificate] --> B[Parse certificate:<br/>Extract serial, expiry<br/>Verify validity]
     B --> C[Store in Vault<br/>POST /v1/secret/data/certs/app/id]
     C --> D[Vault Payload:<br/>certificate PEM<br/>private_key encrypted<br/>ca_chain PEM<br/>serial_number<br/>expiration ISO8601]
@@ -217,7 +217,7 @@ flowchart LR
             <h2 class="section-title">4. Automatic Certificate Renewal</h2>
             <p class="section-description">Backend scheduler monitors certificate expiration and triggers automatic renewal 30 days before expiry.</p>
             <div class="mermaid">
-flowchart LR
+flowchart TD
     A[Backend Cron Job<br/>Daily at 2 AM] --> B[Query DB:<br/>expiration < NOW + 30 days]
     B --> C{Expiring<br/>certs found?}
     C -->|Yes| D[For each certificate:<br/>call renewal function]
@@ -248,7 +248,7 @@ flowchart LR
             <h2 class="section-title">5. Certificate Revocation</h2>
             <p class="section-description">Certificate can be revoked through ServiceNow or admin interface for security incidents or decommissioning.</p>
             <div class="mermaid">
-flowchart LR
+flowchart TD
     A[Revocation Trigger:<br/>Security incident<br/>App decommission<br/>User request] --> B[ServiceNow or Admin calls:<br/>POST /api/cert/id/revoke<br/>Body: reason_code]
     B --> C[Backend validates:<br/>Check permissions<br/>Verify cert exists]
     C --> D{Valid<br/>request?}
@@ -301,27 +301,48 @@ flowchart LR
     </div>
 
     <script>
-        mermaid.initialize({ 
-            startOnLoad: true,
-            theme: 'base',
-            themeVariables: {
-                primaryColor: '#667eea',
-                primaryTextColor: '#fff',
-                primaryBorderColor: '#5568d3',
-                lineColor: '#667eea',
-                secondaryColor: '#764ba2',
-                tertiaryColor: '#f0f4ff'
-            },
-            flowchart: {
-                curve: 'basis',
-                padding: 20
-            }
-        });
+        let mermaidInitialized = false;
 
-        function showSection(index) {
+        function initMermaid() {
+            if (!mermaidInitialized) {
+                mermaid.initialize({ 
+                    startOnLoad: false,
+                    theme: 'base',
+                    themeVariables: {
+                        primaryColor: '#667eea',
+                        primaryTextColor: '#fff',
+                        primaryBorderColor: '#5568d3',
+                        lineColor: '#667eea',
+                        secondaryColor: '#764ba2',
+                        tertiaryColor: '#f0f4ff'
+                    },
+                    flowchart: {
+                        curve: 'basis',
+                        padding: 20
+                    }
+                });
+                mermaidInitialized = true;
+            }
+        }
+
+        async function renderMermaid(element) {
+            const id = 'mermaid-' + Math.random().toString(36).substr(2, 9);
+            const graphDefinition = element.textContent;
+            
+            try {
+                const { svg } = await mermaid.render(id, graphDefinition);
+                element.innerHTML = svg;
+            } catch (error) {
+                console.error('Mermaid render error:', error);
+                element.innerHTML = '<p style="color: red;">Error rendering diagram</p>';
+            }
+        }
+
+        async function showSection(index) {
             const sections = document.querySelectorAll('.diagram-section');
             const buttons = document.querySelectorAll('.nav-btn');
             
+            // Update active states
             sections.forEach((section, i) => {
                 if (i === index) {
                     section.classList.add('active');
@@ -337,7 +358,22 @@ flowchart LR
                     button.classList.remove('active');
                 }
             });
+
+            // Render mermaid diagram in active section
+            initMermaid();
+            const activeSection = sections[index];
+            const mermaidElement = activeSection.querySelector('.mermaid');
+            
+            if (mermaidElement && !mermaidElement.hasAttribute('data-rendered')) {
+                await renderMermaid(mermaidElement);
+                mermaidElement.setAttribute('data-rendered', 'true');
+            }
         }
+
+        // Render first diagram on load
+        window.addEventListener('DOMContentLoaded', () => {
+            showSection(0);
+        });
     </script>
 </body>
 </html>
