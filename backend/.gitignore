@@ -1,2 +1,12 @@
-pipeline.txt
-plan.md
+target/
+
+.vscode/
+__pycache__/
+*.pyc
+.DS_Store
+
+
+*.log
+.idea/
+*.iml
+*.tmp

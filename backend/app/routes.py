@@ -1,1 +1,0 @@
-#  API Routing (Certificate Application/Revocation/Query)
