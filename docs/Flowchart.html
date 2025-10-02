@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Management Flow - Multi-View</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .nav-btn {
+            padding: 12px 24px;
+            background: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #667eea;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            background: #f8f9ff;
+        }
+        .nav-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        .diagram-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+        .diagram-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .section-title {
+            font-size: 1.8em;
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        .section-description {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        .mermaid {
+            background: #fafbff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .legend {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #667eea;
+        }
+        .legend h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .legend ul {
+            list-style-position: inside;
+            color: #555;
+        }
+        .legend li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📜 Certificate Management System Flow</h1>
+        
+        <div class="nav-buttons">
+            <button class="nav-btn active" onclick="showSection(0)">1. Request Flow</button>
+            <button class="nav-btn" onclick="showSection(1)">2. Certificate Issuance</button>
+            <button class="nav-btn" onclick="showSection(2)">3. Certificate Access</button>
+            <button class="nav-btn" onclick="showSection(3)">4. Renewal Process</button>
+            <button class="nav-btn" onclick="showSection(4)">5. Revocation Process</button>
+            <button class="nav-btn" onclick="showSection(5)">6. Monitoring</button>
+        </div>
+
+        <!-- Section 1: Request Flow -->
+        <div class="diagram-section active">
+            <h2 class="section-title">1. Certificate Request Flow</h2>
+            <p class="section-description">User submits certificate request through ServiceNow portal, which triggers the backend API to process the request.</p>
+            <div class="mermaid">
+flowchart LR
+    A[User in ServiceNow Portal] --> B[Fill Request Form:<br/>CN, SAN, TTL, Business Unit]
+    B --> C[ServiceNow Workflow<br/>Triggered]
+    C --> D[POST /api/cert-request<br/>Authorization: Bearer token<br/>JSON payload]
+    D --> E[FastAPI Backend<br/>Request Handler]
+    E --> F{Validate Input}
+    F -->|Valid| G[Store in DB<br/>status: pending<br/>request_id generated]
+    F -->|Invalid| H[Return 400 Error<br/>Validation details]
+    G --> I[Call vault.generate_certificate<br/>Pass CN, SAN, TTL, key_type]
+            </div>
+            <div class="legend">
+                <h3>Key API Details:</h3>
+                <ul>
+                    <li><strong>Endpoint:</strong> POST /api/cert-request</li>
+                    <li><strong>Headers:</strong> Authorization: Bearer {servicenow_token}</li>
+                    <li><strong>Payload:</strong> common_name, alt_names[], ttl, business_unit</li>
+                    <li><strong>Response:</strong> request_id, status</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 2: Certificate Issuance -->
+        <div class="diagram-section">
+            <h2 class="section-title">2. Certificate Issuance Process</h2>
+            <p class="section-description">Backend coordinates with Vault and AWS PCA to generate and sign the certificate.</p>
+            <div class="mermaid">
+flowchart LR
+    A[Backend vault.py] --> B[Authenticate to Vault<br/>POST /v1/auth/approle/login<br/>role_id + secret_id]
+    B --> C[Receive X-Vault-Token]
+    C --> D[Call Vault PKI<br/>POST /v1/pki/intermediate/generate/internal<br/>Headers: X-Vault-Token]
+    D --> E[Vault generates keypair<br/>RSA 2048-bit<br/>Creates CSR]
+    E --> F[Return CSR PEM<br/>+ csr_id]
+    F --> G[Backend calls AWS PCA<br/>boto3: issue_certificate]
+    G --> H[AWS PCA Parameters:<br/>CertificateAuthorityArn<br/>Csr PEM bytes<br/>Validity Days<br/>TemplateArn]
+    H --> I[AWS PCA validates<br/>and signs certificate]
+    I --> J[Poll for certificate<br/>get_certificate API]
+    J --> K[Receive Certificate +<br/>Certificate Chain]
+            </div>
+            <div class="legend">
+                <h3>Technical Details:</h3>
+                <ul>
+                    <li><strong>Vault Auth:</strong> AppRole method (role_id, secret_id)</li>
+                    <li><strong>CSR Format:</strong> PEM-encoded, SHA256withRSA</li>
+                    <li><strong>AWS PCA API:</strong> boto3 client methods</li>
+                    <li><strong>Certificate Chain:</strong> End-entity + Intermediate + Root CA</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 3: Certificate Access -->
+        <div class="diagram-section">
+            <h2 class="section-title">3. Certificate Storage & Access</h2>
+            <p class="section-description">Certificate is stored in Vault and made available to applications through the backend API.</p>
+            <div class="mermaid">
+flowchart LR
+    A[Backend receives<br/>signed certificate] --> B[Parse certificate:<br/>Extract serial, expiry<br/>Verify validity]
+    B --> C[Store in Vault<br/>POST /v1/secret/data/certs/app/id]
+    C --> D[Vault Payload:<br/>certificate PEM<br/>private_key encrypted<br/>ca_chain PEM<br/>serial_number<br/>expiration ISO8601]
+    D --> E[Vault returns<br/>version number]
+    E --> F[Update DB:<br/>status: issued<br/>certificate_id<br/>vault_path<br/>expiration]
+    F --> G[Return to ServiceNow:<br/>JSON: cert_id, serial,<br/>expiry, download_url]
+    G --> H[Application requests cert<br/>GET /api/cert/id/download<br/>Auth: API Key or mTLS]
+    H --> I[Backend validates auth]
+    I --> J[Fetch from Vault<br/>GET /v1/secret/data/certs/...]
+    J --> K[Return ZIP or JSON:<br/>server.crt, server.key<br/>ca-chain.crt]
+            </div>
+            <div class="legend">
+                <h3>Storage Details:</h3>
+                <ul>
+                    <li><strong>Vault Path:</strong> secret/data/certs/{app-name}/{cert-id}</li>
+                    <li><strong>Secret Engine:</strong> KV v2 (versioned)</li>
+                    <li><strong>Access Methods:</strong> API Key, Service Account Token, mTLS</li>
+                    <li><strong>File Permissions:</strong> 600 (read/write owner only)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 4: Renewal Process -->
+        <div class="diagram-section">
+            <h2 class="section-title">4. Automatic Certificate Renewal</h2>
+            <p class="section-description">Backend scheduler monitors certificate expiration and triggers automatic renewal 30 days before expiry.</p>
+            <div class="mermaid">
+flowchart LR
+    A[Backend Cron Job<br/>Daily at 2 AM] --> B[Query DB:<br/>expiration < NOW + 30 days]
+    B --> C{Expiring<br/>certs found?}
+    C -->|Yes| D[For each certificate:<br/>call renewal function]
+    C -->|No| E[Log: No renewals needed]
+    D --> F[Call Vault API<br/>POST /v1/pki/issue/role<br/>Same CN and SAN]
+    F --> G[Vault generates<br/>new keypair + CSR]
+    G --> H[Submit to AWS PCA<br/>Same issuance flow]
+    H --> I[Store new cert in Vault<br/>New version, same path]
+    I --> J[Update DB:<br/>new expiration date<br/>Keep old cert 30 days]
+    J --> K[Send notification:<br/>POST /api/notify/cert-renewed<br/>Email + Webhook]
+    K --> L[Application polls:<br/>GET /api/cert/check-updates]
+    L --> M[Download new cert<br/>Hot reload or restart]
+    M --> N[Log renewal event<br/>Audit trail]
+            </div>
+            <div class="legend">
+                <h3>Renewal Configuration:</h3>
+                <ul>
+                    <li><strong>Schedule:</strong> Daily cron job at 2:00 AM</li>
+                    <li><strong>Renewal Window:</strong> 30 days before expiration</li>
+                    <li><strong>Notification Methods:</strong> Email, Webhook, Slack</li>
+                    <li><strong>Rollback:</strong> Old cert retained for 30 days</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 5: Revocation Process -->
+        <div class="diagram-section">
+            <h2 class="section-title">5. Certificate Revocation</h2>
+            <p class="section-description">Certificate can be revoked through ServiceNow or admin interface for security incidents or decommissioning.</p>
+            <div class="mermaid">
+flowchart LR
+    A[Revocation Trigger:<br/>Security incident<br/>App decommission<br/>User request] --> B[ServiceNow or Admin calls:<br/>POST /api/cert/id/revoke<br/>Body: reason_code]
+    B --> C[Backend validates:<br/>Check permissions<br/>Verify cert exists]
+    C --> D{Valid<br/>request?}
+    D -->|Yes| E[Call Vault:<br/>POST /v1/pki/revoke<br/>Body: serial_number]
+    D -->|No| F[Return 403 Forbidden]
+    E --> G[Call AWS PCA:<br/>revoke_certificate API<br/>CertificateArn + Reason]
+    G --> H[AWS PCA updates:<br/>CRL Certificate Revocation List<br/>OCSP responder]
+    H --> I[Update DB:<br/>status: revoked<br/>revocation_timestamp<br/>reason]
+    I --> J[Notify application:<br/>POST to app webhook<br/>cert_id, revocation_time]
+    J --> K[App stops using cert<br/>Requests new certificate]
+    K --> L[Write audit log:<br/>timestamp, requester,<br/>reason, actions taken]
+            </div>
+            <div class="legend">
+                <h3>Revocation Details:</h3>
+                <ul>
+                    <li><strong>Reasons:</strong> keyCompromise, cessationOfOperation, privilegeWithdrawn</li>
+                    <li><strong>CRL Update:</strong> Immediate propagation</li>
+                    <li><strong>OCSP:</strong> Real-time revocation status</li>
+                    <li><strong>Audit:</strong> Full trail with requester identity</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 6: Monitoring -->
+        <div class="diagram-section">
+            <h2 class="section-title">6. Dashboard & Monitoring</h2>
+            <p class="section-description">React dashboard provides real-time visibility into certificate inventory, expiration, and system health.</p>
+            <div class="mermaid">
+flowchart LR
+    A[React Dashboard] --> B[GET /api/dashboard/stats<br/>Auth: Session token]
+    B --> C[Backend queries DB:<br/>Total certificates<br/>Expiring count<br/>Recent requests<br/>Failed requests]
+    C --> D[Calculate metrics:<br/>Success rate<br/>Average issuance time<br/>Health status]
+    D --> E[Return JSON response:<br/>Metrics + Charts data]
+    E --> F[Dashboard displays:<br/>Certificate table<br/>Expiration timeline<br/>Activity log<br/>Status indicators]
+    F --> G[Auto-refresh 30s<br/>WebSocket for real-time]
+    G --> H{Alert<br/>conditions?}
+    H -->|Yes| I[Send notifications:<br/>Email, Slack<br/>PagerDuty for critical]
+    H -->|No| J[Continue monitoring]
+            </div>
+            <div class="legend">
+                <h3>Dashboard Features:</h3>
+                <ul>
+                    <li><strong>Metrics:</strong> Total, Active, Expiring, Revoked certificates</li>
+                    <li><strong>Charts:</strong> Expiration timeline, Request trends, Success rate</li>
+                    <li><strong>Real-time:</strong> WebSocket updates every 30 seconds</li>
+                    <li><strong>Alerts:</strong> Email, Slack, PagerDuty integration</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#667eea',
+                primaryTextColor: '#fff',
+                primaryBorderColor: '#5568d3',
+                lineColor: '#667eea',
+                secondaryColor: '#764ba2',
+                tertiaryColor: '#f0f4ff'
+            },
+            flowchart: {
+                curve: 'basis',
+                padding: 20
+            }
+        });
+
+        function showSection(index) {
+            const sections = document.querySelectorAll('.diagram-section');
+            const buttons = document.querySelectorAll('.nav-btn');
+            
+            sections.forEach((section, i) => {
+                if (i === index) {
+                    section.classList.add('active');
+                } else {
+                    section.classList.remove('active');
+                }
+            });
+            
+            buttons.forEach((button, i) => {
+                if (i === index) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
