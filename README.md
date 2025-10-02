@@ -90,7 +90,7 @@ end
   G --> H
   G --> I
 ```
-[To find detailed flowchart](docs/Flowchart.md)
+[To find detailed flowchart](https://ec528-fall-2025.github.io/AutoSec-Certs/)
 <!-- #### 4.1.1 Backend Responsibilities
 
 - Generate key pair (public/private key)  
