@@ -15,7 +15,11 @@ spring:
   cloud:
     vault:
       enabled: false
-
+  vault:
+    host: 127.0.0.1
+    port: 8200
+    scheme: http
+    token: hvs.jfTsV7eeqWZx9YwXOMLaKCou
 server:
   port: 8080
 
