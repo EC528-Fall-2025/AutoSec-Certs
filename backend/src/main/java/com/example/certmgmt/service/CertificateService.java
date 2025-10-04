@@ -152,7 +152,7 @@ public class CertificateService {
      */
     public List<Map<String, String>> listCertificates() {
         List<Map<String, String>> result = new ArrayList<>();
-        result.add(Map.of("message", "List功能需要额外配置Vault权限"));
+        result.add(Map.of("message", "The List functionality requires additional configuration of Vault permissions."));
         return result;
     }
 

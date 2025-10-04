@@ -19,7 +19,7 @@ spring:
     host: 127.0.0.1
     port: 8200
     scheme: http
-    token: ${VAULT_TOKEN}
+    token: 
 server:
   port: 8080
 

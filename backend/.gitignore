@@ -5,7 +5,7 @@ __pycache__/
 *.pyc
 .DS_Store
 
-
+src/main/resources/application.yml
 *.log
 .idea/
 *.iml

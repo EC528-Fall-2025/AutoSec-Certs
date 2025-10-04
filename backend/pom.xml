@@ -47,16 +47,16 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-        <!-- 数据库驱动 - 选择一个 -->
+      
         
-        <!-- 选项1: H2 内存数据库 (开发测试用) - 推荐先用这个 -->
+        
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
         </dependency>
         
-        <!-- 选项2: PostgreSQL (生产环境推荐) - 暂时注释掉
+        <!-- 
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -96,7 +96,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.30</version> <!-- 或最新版本 -->
+            <version>1.18.30</version> 
             <scope>provided</scope>
         </dependency>
         
