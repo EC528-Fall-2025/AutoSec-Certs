@@ -143,6 +143,7 @@ Our project automates the above lifecycle using cloud-native tooling:
 ## 6. Release Planning
 - **Release Strategy:**
 ## Sprint 1: Project Setup & Exploration (9/24 – 10/1)
+Scrum Master: Ethan Liang
 - Familiarized ourselves with the overall project goals.  
 - Developed a clear and detailed project description.  
 - Outlined the workflow pipeline for the system.  
@@ -151,13 +152,15 @@ Our project automates the above lifecycle using cloud-native tooling:
 - [Slides](https://docs.google.com/presentation/d/1PIYamKVhi-m9k4DFpzvKhFeDj9LKj33SVk3x0rdOPUo/edit?usp=sharing)
 
 ## Sprint 2:Workflow & Integration Foundations (10/2 - 10/15)
+Scrum Master: Logan Lechuga
 
 Goals: Establish core workflows for certificate lifecycle management, focusing on request, approval, issuance, and storage.
 -	Design and implement ServiceNow workflow for certificate requests and approvals.
+-	Determine how we will scrape ServiceNow forms for user inputted information and sending that info to backend.
 -	Prototype Vault integration for keypair generation, CSR submission, and certificate storage.
 -	Document certificate renewal and rotation flow (including CSR regeneration and switchover period).
 -	Add admin user persona to capture monitoring, auditing, and operational needs.
--	Update system architecture diagrams to reflect detailed flows.
+-	Update system architecture diagrams to reflect detailed flows, specifically the Hashicorp vault section of our project flow.
 -	Begin testing workflow execution end-to-end.
 
 ---
