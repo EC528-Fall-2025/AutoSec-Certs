@@ -20,6 +20,15 @@ spring:
     port: 8200
     scheme: http
     token: 
+
+  servicenow:
+    base-url: https://your-instance.service-now.com
+    api-path: /api/now/table
+    username: ${SERVICENOW_USERNAME:admin}
+    password: ${SERVICENOW_PASSWORD:password}
+    connection-timeout: 5000
+    read-timeout: 10000
+    
 server:
   port: 8080
 
