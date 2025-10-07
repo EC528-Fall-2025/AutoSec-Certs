@@ -63,32 +63,24 @@
 
 ### 4.1 Certificate Lifecycle Pipeline
 ```mermaid
-flowchart TD
-  subgraph SN[ServiceNow]
-    A[User Request<br/>via Portal / Workflow]
-  end
+sequenceDiagram
+    participant User as User
+    participant SN as ServiceNow
+    participant VAULT as HashiCorp Vault
+    participant CA as Keyfactor CA
+    participant APP as Application
 
-  subgraph HV[HashiCorp Vault]
-    B[Generate Keypair<br/>and CSR]
-    C[Submit CSR to CA]
-    D[Receive Certificate<br/>from KeyFactor / AWS PCA]
-    E[Store Certificate<br/>and Key in Vault]
+    User->>SN: Submit Certificate Request
+    SN->>SN: Validate & Approve
+    SN->>VAULT: Generate Keypair + CSR (API)
+    VAULT-->>SN: Return CSR
+    SN->>CA: Submit CSR (API)
+    CA-->>SN: Return Certificate
+    SN->>VAULT: Store Cert + Key (API)
+    APP->>VAULT: Request Cert + Key (IAM Auth)
+    VAULT-->>APP: Return Secret
 
-end
-    F[Application Access<br/>via Vault IAM / Agent]
-    G[Use for TLS<br/>and Authentication]
-    H[Automatic Renewal<br/>or Rotation]
-    I[Revocation if Compromised]
- 
-
-  A --> B
-  B --> C
-  C --> D
-  D --> E
-  E --> F
-  F --> G
-  G --> H
-  G --> I
+    Note over SN,CA: Renewal and Revocation handled via same API paths
 ```
 [To find detailed flowchart](https://ec528-fall-2025.github.io/AutoSec-Certs/)
 <!-- #### 4.1.1 Backend Responsibilities
