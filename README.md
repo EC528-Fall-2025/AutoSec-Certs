@@ -158,6 +158,8 @@ Goals: Establish core workflows for certificate lifecycle management, focusing o
 -	Add admin user persona to capture monitoring, auditing, and operational needs.
 -	Update system architecture diagrams to reflect detailed flows, specifically the Hashicorp vault section of our project flow.
 -	Begin testing workflow execution end-to-end.
+-	[Video](https://youtu.be/Tumgo1tA8KM)
+-	[Slides](https://docs.google.com/presentation/d/1KC3eZ6x6bfZiHKM66gRQ6SQdzIA8WmrqmExs-7UX6r0/edit?slide=id.g38c4c02e76d_0_0#slide=id.g38c4c02e76d_0_0)
 
 ---
 
