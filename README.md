@@ -161,6 +161,19 @@ Goals: Establish core workflows for certificate lifecycle management, focusing o
 -	[Video](https://youtu.be/Tumgo1tA8KM)
 -	[Slides](https://docs.google.com/presentation/d/1KC3eZ6x6bfZiHKM66gRQ6SQdzIA8WmrqmExs-7UX6r0/edit?slide=id.g38c4c02e76d_0_0#slide=id.g38c4c02e76d_0_0)
 
+## Sprint 3: Establishing Communication between Applications (10/16-10/29)
+Scrum Master: Siyuan Jing
+
+Goals: Deploy a Hashicorp server to the cloud to enable communication between SNOW and hashicorp
+- For this sprint our end goal was to set up an end-to-end demo from certificate request in SNOW to generating a key via Hashicorp.
+- GUI for SNOW was updated to make the form more aesthetically pleasing.
+- Generated and securely stored user credentials in SNOW database so that they can login and view their request(s) status.
+- Deployed a Hashicorp server to the cloud for testing the full pipeline.
+- Created a new SNOW script-include that establishes a connection with HashiCorp and updates the SNOW databse with relevant information received from Hashicorp.
+- Tested the pipeline to try and find any bugs and to handle edge cases.
+- Updated documentation for SNOW and Hashicorp Vault
+- [Video]()
+- [Slides]()
 ---
 
 ## Appendix 
