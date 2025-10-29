@@ -195,7 +195,7 @@ Goals: Deploy a Hashicorp server to the cloud to enable communication between SN
 - Created a new SNOW script-include that establishes a connection with HashiCorp and updates the SNOW databse with relevant information received from Hashicorp.
 - Tested the pipeline to try and find any bugs and to handle edge cases.
 - Updated documentation for SNOW and Hashicorp Vault
-- [Video]()
+- [Video](https://drive.google.com/file/d/1VVZDoW-i39UJ_Zsa7D4sPOL4M2X6e3ko/view?usp=sharing)
 - [Slides](https://docs.google.com/presentation/d/1C5Q92Lw8--OSz_SLpbPFEDN9oCDwH8GVcfYVub6Qexc/edit?slide=id.g39e0393301b_1_111#slide=id.g39e0393301b_1_111)
 ---
 
