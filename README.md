@@ -110,10 +110,10 @@ A typical certificate lifecycle consists of the following stages:
 Our project automates the above lifecycle using cloud-native tooling:
 
 - **Request** – User submits a certificate request via **ServiceNow**.  
-- **Issue** – Certificate and private key are generated using **Keyfactor** (or AWS PCA).  
-- **Store** – The issued certificate and private key are securely stored in **HashiCorp Vault**.  
+- **Issue** – Certificate and private key are generated using **ServiceNow**.  
+- **Store** – The issued certificate and private key are securely stored in **HashiCorp Vault and ServiceNow**.  
 - **Access** – Applications retrieve the certificate and key from Vault, validated via **AWS IAM roles**.  
-- **Rotate** – New certificates are automatically issued before expiration and updated in Vault.
+- **Rotate** – New certificates are automatically issued before expiration and updated in HashiCorp Vault.
 
 
 
@@ -123,7 +123,30 @@ Our project automates the above lifecycle using cloud-native tooling:
 - Security is the first priority: Private keys are never exposed outside of Vault and are accessed only by authenticated, authorized, entities.
 
 ---
+### 4.4 Servicenow Implementation Details
 
+#### 4.4.1 Certificate Request Table Schema
+- A database table in ServiceNow that stores all certificate request information, a centralized area to track certificate lifecycle from request to issuance 
+- Schema
+- Serial #: unique identifier linked to the private key 
+- Private key - the secret cryptographic key(stored securely) 
+- Digital certificate- the actual signed certificate 
+- Request status- reflects the current status of the certificate( e.g., pending, approved, issued, rejected) 
+- User Credentials- information about who requested the certificate
+
+#### 4.4.2 Service Portal Widgets (User Interface)
+- 5 GUI pages for the certificate request workflow
+- Restructured the page layouts by adding new HTML code, added new css code to improve visual styling and formatting, no backend logic changes, purely frontend GUI improvements, this provides user-friendly interface for the certificate request process 
+
+
+#### 4.4.3 VaultAPIClient Script
+- Server side javascript class that handles hashicorp vault integration 
+- This establishes connection with HashiCorp Vault, handles authentication and API communication
+- Updates the certificate request table, writes data back to ServiceNow database after Vault operations 
+- This will help document connection/authentication to vault, API calls to Vault endpoints, parsing vault responses,updating SNOW table records 
+- ServiceNow workflows calls this script Include, script include makes REST API calls to Vault, receives responses(CSR, private keys, etc), updates the certificate request table with the results which acts as the bridge between ServiceNow and HashiCorp Vault enabling automated certificate management 
+
+---
 ## 5. Acceptance Criteria
 - **Minimum Acceptance Criteria:**  
   - [ ] Users can submit cerficiate requests with ServiceNow
