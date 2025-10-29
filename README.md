@@ -173,7 +173,7 @@ Goals: Deploy a Hashicorp server to the cloud to enable communication between SN
 - Tested the pipeline to try and find any bugs and to handle edge cases.
 - Updated documentation for SNOW and Hashicorp Vault
 - [Video]()
-- [Slides]()
+- [Slides](https://docs.google.com/presentation/d/1C5Q92Lw8--OSz_SLpbPFEDN9oCDwH8GVcfYVub6Qexc/edit?slide=id.g39e0393301b_1_111#slide=id.g39e0393301b_1_111)
 ---
 
 ## Appendix 
