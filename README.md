@@ -197,6 +197,20 @@ Goals: Deploy a Hashicorp server to the cloud to enable communication between SN
 - Updated documentation for SNOW and Hashicorp Vault
 - [Video](https://drive.google.com/file/d/1VVZDoW-i39UJ_Zsa7D4sPOL4M2X6e3ko/view?usp=sharing)
 - [Slides](https://docs.google.com/presentation/d/1C5Q92Lw8--OSz_SLpbPFEDN9oCDwH8GVcfYVub6Qexc/edit?slide=id.g39e0393301b_1_111#slide=id.g39e0393301b_1_111)
+
+## Sprint 4: Pivoting to connection with AWS
+Scrum Master: Aarush Duvvuri
+
+Goals: Establish communication between AWS accounts and Hashicorp cloud instance
+- For this sprint our end goal was to establish communication between AWS and Hashicorp so that users could view their private keys
+  from their AWS accounts (via an EC2 instance)
+- GUI for SNOW was updated to prompt users for the AWS account ID.
+- Updated the AppRoles in HashiCorp to be user specific.
+- Created a VaultRole for AWS accounts that provides them with restricted privileges, in this case to only view their private key.
+- Tested the pipleine to look for any discrepancies for the logic between SNOW and hashicorp.
+- Worked on authenticating AWS accounts accessing private keys but encountered setbacks.
+- [Videos](https://www.youtube.com/watch?v=-2qdLIakimQ)
+- [Slides](https://docs.google.com/presentation/d/1vAktVZfDj_IIzJEIMDabUJMM8wLFmot6a85i_a7I4LU/edit?slide=id.g3a286d58f66_0_0#slide=id.g3a286d58f66_0_0)
 ---
 
 ## Appendix 
