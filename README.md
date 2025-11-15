@@ -63,28 +63,53 @@
 
 ### 4.1 Certificate Lifecycle Pipeline
 ```mermaid
-sequenceDiagram
-    participant User as User
-    participant SN as ServiceNow
-    participant Vault as HashiCorp Vault
-    participant CA as Keyfactor
-    participant App as Application
+graph TB
+    subgraph USER["USER INPUT"]
+        A1[Certificate Information<br/>- Name<br/>- Common/Domain Name<br/>- Organization<br/>- Country<br/>- State<br/>- Locality<br/>- Time to Live]
+        A2[AWS Account Information<br/>- AWS Account ID<br/>- AWS IAM Role]
+        A3[Client Information<br/>- Email]
+    end
 
-    User->>SN: Submit Certificate Request Form
+    subgraph SNOW["ServiceNow Backend"]
+        B1[SNOW Role + Policy]
+        B2[Generate User Policy + Role<br/>for Security]
+        B3[Assume User Role]
+        B4[Generate Certificate]
+        
+        D1[HashiCorp Vault API]
+        
+        B6[Register AWS Account<br/>for Authentication]
+        B7[Add Vault Access Policy<br/>for User]
+    end
 
-    SN->>Vault: POST /v1/pki/my-role/csr\n(Generate Keypair + CSR)
-    Vault-->>SN: Return CSR
+    subgraph AWS["AWS EC2 Instance"]
+        C1[EC2 Instance<br/>Preconfigured Permissions]
+        C2[Authenticate to Vault<br/>via AWS IAM]
+        C3[Retrieve Certificate<br/>from User Directory]
+    end
 
-    SN->>CA: POST /Certificates/Request\n(Submit CSR to Keyfactor)
-    CA-->>SN: Return Signed Certificate
+    A1 --> B1
+    A2 --> B1
+    
+    B1 --> B2
+    B1 --> B6
+    
+    B2 --> B3
+    B3 --> B4
+    B4 -->|Store Certificate| D1
+    
+    B6 --> B7
+    B7 -->|Configure Access| D1
+    
+    SNOW --> C1
+    C1 --> C2
+    C2 -->|Access| D1
+    D1 --> C3
 
-    SN->>Vault: PUT /v1/secret/data/myapp/cert\n(Store Cert + Key)
-
-    App->>Vault: GET /v1/secret/data/myapp/cert\n(Retrieve Cert via IAM)
-    Vault-->>App: Return Cert + Key
-
-    Note over SN,CA: Renewal via POST /Certificates/Renew
-    Note over SN,CA: Revoke via POST /Certificates/Revoke
+    style USER fill:#1d1c40,stroke:#10739e,stroke-width:2px
+    style SNOW fill:#1f1f1f,stroke:#6c8ebf,stroke-width:2px
+    style AWS fill:#19103d,stroke:#9673a6,stroke-width:2px
+    style D1 fill:#373752,stroke:#ffa500,stroke-width:3px
 ```
 [To find detailed flowchart](https://ec528-fall-2025.github.io/AutoSec-Certs/)
 <!-- #### 4.1.1 Backend Responsibilities
