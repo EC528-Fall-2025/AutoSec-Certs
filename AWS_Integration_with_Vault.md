@@ -5,11 +5,11 @@
 
 # A Look at the Backend
 
-This section primarily is dedicated on how AWS was set up with the Vault, and how users are able to access thier information.
+This section primarily is dedicated on how AWS was set up with the Vault, and how users are able to access their information.
 
 ## Valid AWS Credentials
 
-One case with the implementation is that the Vault itself rests on the cloud provided by HashiCorp themselves, and not on the AWS EC2 instance. Since the Vault doesn't sit on an EC2 instance, it needs to have special perms to allow AWS users. To validate, it uses one of the AWS account user (IAM User) to be a collateral. 
+One case with the implementation is that the Vault itself rests on the cloud provided by HashiCorp themselves, and not on the AWS EC2 instance. Since the Vault doesn't sit on an EC2 instance, it needs to have special perms to allow AWS users. To validate, it uses one of the AWS account user (IAM User) to be a representative identity. 
 
 For this to be implemented, the Vault needs to have the IAM User access key and secret key, in the form of this command:
 ```sh
@@ -88,12 +88,12 @@ This allowed from anyone from the same AWS account ID use their Vault directory.
 ```sh
 vault write auth/aws/role/${example_role_name} \
   auth_type=iam \
-  bound_iam_principal_arn=${AWS_IAM_ROLE_ARM} \
+  bound_iam_principal_arn=${AWS_IAM_ROLE_ARN} \
   policies={account-policy} \
   max_ttl=1h
 ```
 
-Option 2 is more stricter as it **only** allows for the AWS account ID **and** role to access their directory. This makes it more secure. One primary concern of this was the number of policies we can accumulate since a new policy needs to be assigned to a new role regardless of the account ID. Luckily, HashiCorp doesn't have a limit on number of policies we can have in the same namespace ([link](https://developer.hashicorp.com/vault/docs/internals/limits)).  The verdict was **option 2.**
+Option 2 is stricter as it **only** allows for the AWS account ID **and** role to access their directory. This makes it more secure. One primary concern of this was the number of policies we can accumulate since a new policy needs to be assigned to a new role regardless of the account ID. Luckily, HashiCorp doesn't have a limit on number of policies we can have in the same namespace ([link](https://developer.hashicorp.com/vault/docs/internals/limits)).  The verdict was **option 2.**
 
 With that command given, the AWS authentication for the user is ready for login from their EC2 instance. 
 
