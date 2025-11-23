@@ -3,6 +3,7 @@
 1. [A Look at the Backend](#a-look-at-the-backend)
 2. [Prepping AWS Account](#prepping-aws-account)
 3. [Launching an EC2 Instance](#launching-an-ec2-instance)
+4. [Resources](#resources)
 
 # A Look at the Backend
 
@@ -172,3 +173,9 @@ Retrieve a certificate:
 ```sh
 vault kv get secret/certs/<AWS_ACCOUNT_ID>/<AWS_IAM_ROLE>/certname
 ```
+
+# Resources
+
+- [Vault AWS Authentication: Cross-Account Access with STS (HashiCorp Support)](https://support.hashicorp.com/hc/en-us/articles/19951252634387-Vault-AWS-Authentication-Cross-Account-Access-with-STS)
+- [Multi-Account Access for AWS Authentication (HashiCorp Community)](https://discuss.hashicorp.com/t/multi-account-access-for-aws-authentication/76820)
+- [HashiCorp Support](https://support.hashicorp.com/)
