@@ -5,6 +5,7 @@ trap "echo 'Remember to pkill vault when done'" EXIT
 
 if [ "$#" -lt 7 ]; then
 	echo "Usage: $0 <owner (full) name> <common_name> <organization> <country> <state> <locality> <aws-iam-role-arn> [ttl]"
+	echo "Example: ./aws_integration.sh test-owner-6 test-common-name-6 test-org-6 test-country-6 test-state-6 test-locality-6 test-aws-arn-6"
 	echo "Error: Insufficient arguments provided."
 	exit 1
 fi
