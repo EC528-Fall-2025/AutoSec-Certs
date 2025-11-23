@@ -63,24 +63,53 @@
 
 ### 4.1 Certificate Lifecycle Pipeline
 ```mermaid
-sequenceDiagram
-    participant User as User
-    participant SN as ServiceNow
-    participant VAULT as HashiCorp Vault
-    participant CA as Keyfactor CA
-    participant APP as Application
+graph TB
+    subgraph USER["USER INPUT"]
+        A1[Certificate Information<br/>- Name<br/>- Common/Domain Name<br/>- Organization<br/>- Country<br/>- State<br/>- Locality<br/>- Time to Live]
+        A2[AWS Account Information<br/>- AWS Account ID<br/>- AWS IAM Role]
+        A3[Client Information<br/>- Email]
+    end
 
-    User->>SN: Submit Certificate Request
-    SN->>SN: Validate & Approve
-    SN->>VAULT: Generate Keypair + CSR (API)
-    VAULT-->>SN: Return CSR
-    SN->>CA: Submit CSR (API)
-    CA-->>SN: Return Certificate
-    SN->>VAULT: Store Cert + Key (API)
-    APP->>VAULT: Request Cert + Key (IAM Auth)
-    VAULT-->>APP: Return Secret
+    subgraph SNOW["ServiceNow Backend"]
+        B1[SNOW Role + Policy]
+        B2[Generate User Policy + Role<br/>for Security]
+        B3[Assume User Role]
+        B4[Generate Certificate]
+        
+        D1[HashiCorp Vault API]
+        
+        B6[Register AWS Account<br/>for Authentication]
+        B7[Add Vault Access Policy<br/>for User]
+    end
 
-    Note over SN,CA: Renewal and Revocation handled via same API paths
+    subgraph AWS["AWS EC2 Instance"]
+        C1[EC2 Instance<br/>Preconfigured Permissions]
+        C2[Authenticate to Vault<br/>via AWS IAM]
+        C3[Retrieve Certificate<br/>from User Directory]
+    end
+
+    A1 --> B1
+    A2 --> B1
+    
+    B1 --> B2
+    B1 --> B6
+    
+    B2 --> B3
+    B3 --> B4
+    B4 -->|Store Certificate| D1
+    
+    B6 --> B7
+    B7 -->|Configure Access| D1
+    
+    SNOW --> C1
+    C1 --> C2
+    C2 -->|Access| D1
+    D1 --> C3
+
+    style USER fill:#1d1c40,stroke:#10739e,stroke-width:2px
+    style SNOW fill:#1f1f1f,stroke:#6c8ebf,stroke-width:2px
+    style AWS fill:#19103d,stroke:#9673a6,stroke-width:2px
+    style D1 fill:#373752,stroke:#ffa500,stroke-width:3px
 ```
 [To find detailed flowchart](https://ec528-fall-2025.github.io/AutoSec-Certs/)
 <!-- #### 4.1.1 Backend Responsibilities
@@ -106,10 +135,10 @@ A typical certificate lifecycle consists of the following stages:
 Our project automates the above lifecycle using cloud-native tooling:
 
 - **Request** – User submits a certificate request via **ServiceNow**.  
-- **Issue** – Certificate and private key are generated using **Keyfactor** (or AWS PCA).  
-- **Store** – The issued certificate and private key are securely stored in **HashiCorp Vault**.  
+- **Issue** – Certificate and private key are generated using **ServiceNow**.  
+- **Store** – The issued certificate and private key are securely stored in **HashiCorp Vault and ServiceNow**.  
 - **Access** – Applications retrieve the certificate and key from Vault, validated via **AWS IAM roles**.  
-- **Rotate** – New certificates are automatically issued before expiration and updated in Vault.
+- **Rotate** – New certificates are automatically issued before expiration and updated in HashiCorp Vault.
 
 
 
@@ -119,7 +148,30 @@ Our project automates the above lifecycle using cloud-native tooling:
 - Security is the first priority: Private keys are never exposed outside of Vault and are accessed only by authenticated, authorized, entities.
 
 ---
+### 4.4 Servicenow Implementation Details
 
+#### 4.4.1 Certificate Request Table Schema
+- A database table in ServiceNow that stores all certificate request information, a centralized area to track certificate lifecycle from request to issuance 
+- Schema
+- Serial #: unique identifier linked to the private key 
+- Private key - the secret cryptographic key(stored securely) 
+- Digital certificate- the actual signed certificate 
+- Request status- reflects the current status of the certificate( e.g., pending, approved, issued, rejected) 
+- User Credentials- information about who requested the certificate
+
+#### 4.4.2 Service Portal Widgets (User Interface)
+- 5 GUI pages for the certificate request workflow
+- Restructured the page layouts by adding new HTML code, added new css code to improve visual styling and formatting, no backend logic changes, purely frontend GUI improvements, this provides user-friendly interface for the certificate request process 
+
+
+#### 4.4.3 VaultAPIClient Script
+- Server side javascript class that handles hashicorp vault integration 
+- This establishes connection with HashiCorp Vault, handles authentication and API communication
+- Updates the certificate request table, writes data back to ServiceNow database after Vault operations 
+- This will help document connection/authentication to vault, API calls to Vault endpoints, parsing vault responses,updating SNOW table records 
+- ServiceNow workflows calls this script Include, script include makes REST API calls to Vault, receives responses(CSR, private keys, etc), updates the certificate request table with the results which acts as the bridge between ServiceNow and HashiCorp Vault enabling automated certificate management 
+
+---
 ## 5. Acceptance Criteria
 - **Minimum Acceptance Criteria:**  
   - [ ] Users can submit cerficiate requests with ServiceNow
@@ -154,7 +206,36 @@ Goals: Establish core workflows for certificate lifecycle management, focusing o
 -	Add admin user persona to capture monitoring, auditing, and operational needs.
 -	Update system architecture diagrams to reflect detailed flows, specifically the Hashicorp vault section of our project flow.
 -	Begin testing workflow execution end-to-end.
+-	[Video](https://youtu.be/Tumgo1tA8KM)
+-	[Slides](https://docs.google.com/presentation/d/1KC3eZ6x6bfZiHKM66gRQ6SQdzIA8WmrqmExs-7UX6r0/edit?slide=id.g38c4c02e76d_0_0#slide=id.g38c4c02e76d_0_0)
 
+## Sprint 3: Establishing Communication between Applications (10/16-10/29)
+Scrum Master: Siyuan Jing
+
+Goals: Deploy a Hashicorp server to the cloud to enable communication between SNOW and hashicorp
+- For this sprint our end goal was to set up an end-to-end demo from certificate request in SNOW to generating a key via Hashicorp.
+- GUI for SNOW was updated to make the form more aesthetically pleasing.
+- Generated and securely stored user credentials in SNOW database so that they can login and view their request(s) status.
+- Deployed a Hashicorp server to the cloud for testing the full pipeline.
+- Created a new SNOW script-include that establishes a connection with HashiCorp and updates the SNOW databse with relevant information received from Hashicorp.
+- Tested the pipeline to try and find any bugs and to handle edge cases.
+- Updated documentation for SNOW and Hashicorp Vault
+- [Video](https://drive.google.com/file/d/1VVZDoW-i39UJ_Zsa7D4sPOL4M2X6e3ko/view?usp=sharing)
+- [Slides](https://docs.google.com/presentation/d/1C5Q92Lw8--OSz_SLpbPFEDN9oCDwH8GVcfYVub6Qexc/edit?slide=id.g39e0393301b_1_111#slide=id.g39e0393301b_1_111)
+
+## Sprint 4: Pivoting to connection with AWS
+Scrum Master: Aarush Duvvuri
+
+Goals: Establish communication between AWS accounts and Hashicorp cloud instance
+- For this sprint our end goal was to establish communication between AWS and Hashicorp so that users could view their private keys
+  from their AWS accounts (via an EC2 instance)
+- GUI for SNOW was updated to prompt users for the AWS account ID.
+- Updated the AppRoles in HashiCorp to be user specific.
+- Created a VaultRole for AWS accounts that provides them with restricted privileges, in this case to only view their private key.
+- Tested the pipleine to look for any discrepancies for the logic between SNOW and hashicorp.
+- Worked on authenticating AWS accounts accessing private keys but encountered setbacks.
+- [Videos](https://www.youtube.com/watch?v=-2qdLIakimQ)
+- [Slides](https://docs.google.com/presentation/d/1vAktVZfDj_IIzJEIMDabUJMM8wLFmot6a85i_a7I4LU/edit?slide=id.g3a286d58f66_0_0#slide=id.g3a286d58f66_0_0)
 ---
 
 ## Appendix 
