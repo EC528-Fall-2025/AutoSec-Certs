@@ -31,26 +31,54 @@ KEY_FILE="$CERT_DIR/key.pem"
 mkdir -p "$CERT_DIR"
 chmod 707 "$CERT_DIR"
 
-### DEBUG:
-echo "[DEBUG] Starting cert rotation script..."
-echo "[DEBUG] APP_NAME=$APP_NAME"
-echo "[DEBUG] AWS_ID=$AWS_ID"
-echo "[DEBUG] VAULT_AWS_ROLE=$VAULT_AWS_ROLE"
-echo "[DEBUG] CERT_NAME=$CERT_NAME"
-echo "[DEBUG] KV_PATH=$KV_PATH"
-echo "[DEBUG] CERT_DIR=$CERT_DIR"
+# Logging helpers: timestamped output to stdout and optional logfile
+log() {
+    local level="$1"; shift || true
+    local msg="$*"
+    local ts
+    ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+    printf '%s [%s] %s\n' "$ts" "$level" "$msg"
+    if [ -n "${LOG_FILE:-}" ]; then
+        printf '%s [%s] %s\n' "$ts" "$level" "$msg" >> "$LOG_FILE"
+    fi
+}
+
+info() { log "INFO" "$*"; }
+debug() { log "DEBUG" "$*"; }
+err() {
+    local level="ERROR"
+    local msg="$*"
+    local ts
+    ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+    printf '%s [%s] %s\n' "$ts" "$level" "$msg" >&2
+    if [ -n "${LOG_FILE:-}" ]; then
+        printf '%s [%s] %s\n' "$ts" "$level" "$msg" >> "$LOG_FILE"
+    fi
+}
+
+# Set logfile path now that CERT_DIR exists
+LOG_FILE="$CERT_DIR/ec2_rotation_polling.log"
+touch "$LOG_FILE" 2>/dev/null || true
+chmod 600 "$LOG_FILE" 2>/dev/null || true
+
+debug "Starting cert rotation script..."
+debug "APP_NAME=$APP_NAME"
+debug "AWS_ID=$AWS_ID"
+debug "VAULT_AWS_ROLE=$VAULT_AWS_ROLE"
+debug "CERT_NAME=$CERT_NAME"
+debug "KV_PATH=$KV_PATH"
+debug "CERT_DIR=$CERT_DIR"
 
 
 # 1. Authenticate to Vault with AWS IAM and capture JSON output
 
-### DEBUG:
-echo "[DEBUG] Authenticating to Vault using AWS IAM..."
+debug "Authenticating to Vault using AWS IAM..."
 
 LOGIN_JSON=$(vault login -format=json -method=aws role="$VAULT_AWS_ROLE" header_value=vault.example.com 2>vault_login.err)
 VAULT_EXIT=$?
-echo "[DEBUG] vault login exit=$VAULT_EXIT"
+debug "vault login exit=$VAULT_EXIT"
 if [ -s vault_login.err ]; then
-    echo "[DEBUG] vault login stderr preview:" >&2
+    err "vault login stderr preview:"
     sed -n '1,200p' vault_login.err >&2
 fi
 if [ $VAULT_EXIT -ne 0 ]; then
@@ -61,9 +89,9 @@ fi
 
 # Show a short preview of the JSON response (first 200 chars) to avoid leaking secrets
 if [ -n "$LOGIN_JSON" ]; then
-    printf "[DEBUG] Login JSON preview: %s\n" "$(printf '%s' "$LOGIN_JSON" | head -c 200)"
+    debug "Login JSON preview: $(printf '%s' "$LOGIN_JSON" | head -c 200)"
 else
-    echo "[DEBUG] Login JSON is empty" >&2
+    err "Login JSON is empty"
 fi
 
 # Extract the client token from the login response
@@ -76,22 +104,20 @@ fi
 
 export VAULT_TOKEN
 
-### DEBUG:
-echo "[DEBUG] Extracted Vault token length: ${#VAULT_TOKEN}"
+debug "Extracted Vault token length: ${#VAULT_TOKEN}"
 
 
 # 2. Pull the secrets from KV
 
-### DEBUG:
-echo "[DEBUG] Fetching certificate from Vault KV path: secret/$KV_PATH"
+debug "Fetching certificate from Vault KV path: secret/$KV_PATH"
 
 # Capture KV fetch stdout/stderr for diagnostics
 DATA=$(vault kv list -format=json -namespace=admin -mount="secret" "$KV_PATH" 2>kv_fetch.err)
 # gets [ "cert1", "cert2", ... ]
 KV_EXIT=$?
-echo "[DEBUG] vault kv get exit=$KV_EXIT"
+debug "vault kv get exit=$KV_EXIT"
 if [ -s kv_fetch.err ]; then
-    echo "[DEBUG] vault kv get stderr preview:" >&2
+    err "vault kv get stderr preview:"
     sed -n '1,200p' kv_fetch.err >&2
 fi
 if [ $KV_EXIT -ne 0 ]; then
@@ -100,26 +126,26 @@ if [ $KV_EXIT -ne 0 ]; then
 fi
 # Show DATA size and a short preview (avoid printing private key/cert fully)
 if [ -n "$DATA" ]; then
-    printf "[DEBUG] DATA length: %d bytes\n" "${#DATA}"
-    printf "[DEBUG] DATA preview: %s\n" "$(printf '%s' "$DATA" | head -c 200)"
+    debug "DATA length: ${#DATA} bytes"
+    debug "DATA preview: $(printf '%s' "$DATA" | head -c 200)"
 else
-    echo "[DEBUG] DATA is empty" >&2
+    err "DATA is empty"
 fi
 
-echo "[DEBUG] Parsing cert list from KV..."
+debug "Parsing cert list from KV..."
 
 CERT_LIST=$(echo "$DATA" | jq -r '.[]')
-echo "[DEBUG] Certificates found:"
-echo "$CERT_LIST"
+debug "Certificates found:"
+debug "$CERT_LIST"
 
 CHANGED=0
 for CERT_NAME in $CERT_LIST; do
 
     echo
-    echo "[DEBUG] ----------------------------"
-    echo "[DEBUG] Processing certificate: $CERT_NAME"
-    echo "[DEBUG] KV path: secret/$KV_PATH$CERT_NAME"
-    echo "[DEBUG] ----------------------------"
+    debug "----------------------------"
+    debug "Processing certificate: $CERT_NAME"
+    debug "KV path: secret/$KV_PATH$CERT_NAME"
+    debug "----------------------------"
 
     SINGLE_DATA=$(vault kv get -format=json -namespace=admin -mount="secret" "$KV_PATH$CERT_NAME")
     NEW_CERT=$(echo "$SINGLE_DATA" | jq -r '.data.data.cert')
@@ -134,8 +160,8 @@ for CERT_NAME in $CERT_LIST; do
     CERT_FILE="$CERT_DIR/${CERT_NAME}.pem"
     KEY_FILE="$CERT_DIR/${CERT_NAME}.key"
 
-    echo "[DEBUG] Output cert path: $CERT_FILE"
-    echo "[DEBUG] Output key path:  $KEY_FILE"
+    debug "Output cert path: $CERT_FILE"
+    debug "Output key path: $KEY_FILE"
 
     # Compare hashes
     if [[ -f "$CERT_FILE" ]]; then
@@ -146,11 +172,11 @@ for CERT_NAME in $CERT_LIST; do
 
     NEW_HASH=$(printf "%s" "$NEW_CERT" | sed 's/[[:space:]]*$//' | md5sum | awk '{print $1}')
 
-    echo "[DEBUG] CURRENT_HASH=$CURRENT_HASH"
-    echo "[DEBUG] NEW_HASH=$NEW_HASH"
+    debug "CURRENT_HASH=$CURRENT_HASH"
+    debug "NEW_HASH=$NEW_HASH"
 
     if [[ "$CURRENT_HASH" != "$NEW_HASH" ]]; then
-        echo "[DEBUG] Certificate $CERT_NAME changed, updating..."
+        debug "Certificate $CERT_NAME changed, updating..."
 
         TMP_CERT=$(mktemp)
         TMP_KEY=$(mktemp)
@@ -163,19 +189,19 @@ for CERT_NAME in $CERT_LIST; do
         mv "$TMP_CERT" "$CERT_FILE"
         mv "$TMP_KEY" "$KEY_FILE"
 
-        echo "[DEBUG] Updated $CERT_NAME"
+        info "Updated $CERT_NAME"
         CHANGED=1
     else
-        echo "[DEBUG] No change for $CERT_NAME"
+        debug "No change for $CERT_NAME"
     fi
 
 done
 
 if [[ "$CHANGED" -eq 1 ]]; then
-    echo "[DEBUG] Some certificates changed, reloading service: $APP_NAME"
+    info "Some certificates changed, reloading service: $APP_NAME"
     systemctl reload "$APP_NAME"
 else
-    echo "[DEBUG] No certificates updated, nothing to reload."
+    debug "No certificates updated, nothing to reload."
 fi
 
 
