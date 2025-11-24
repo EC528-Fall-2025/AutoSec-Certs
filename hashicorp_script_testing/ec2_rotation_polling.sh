@@ -4,15 +4,16 @@ set -euo pipefail
 # To be ran periodically on an EC2 instance to poll for changed certificates. 
 # If a change is detected, the new certs are written to disk and the relevant service is reloaded.
 
-if [ "$#" -lt 4 ]; then
-    echo "Usage: $0 <app-name> <aws-id> <vault-aws-role> <cert-name>" >&2
+if [ "$#" -lt 3 ]; then
+    echo "Usage: $0 <app-name> <aws-id> <vault-aws-role>" >&2
     exit 2
 fi
 
 APP_NAME="$1"
 AWS_ID="$2"
 VAULT_AWS_ROLE="$3"
-CERT_NAME="$4"
+#CERT_NAME="$4"
+CERT_NAME=""
 
 #KV_PATH="certs/$AWS_ID/$VAULT_AWS_ROLE/$CERT_NAME"
 KV_PATH="certs/$AWS_ID/$VAULT_AWS_ROLE/"
