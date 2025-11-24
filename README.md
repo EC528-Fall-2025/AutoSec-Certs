@@ -238,6 +238,9 @@ Goals: Establish communication between AWS accounts and Hashicorp cloud instance
 - [Slides](https://docs.google.com/presentation/d/1vAktVZfDj_IIzJEIMDabUJMM8wLFmot6a85i_a7I4LU/edit?slide=id.g3a286d58f66_0_0#slide=id.g3a286d58f66_0_0)
 
 ## Sprint 5: AWS Authentication and Certificate Retrieval
+Scrum Master: Primah Muwanga
+
+Goals: Implement Revocation scheme and update any areas that needed to be fixed for the last sprint
 - For this sprint we wanted to ensure we were able to retrieve certificate information from a user's AWS account.
 - We were able to authenticate individual user accounts from AWS with our application.
 - Updated the GUI to provide more details and information the user can digest.
