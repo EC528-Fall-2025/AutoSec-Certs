@@ -234,8 +234,17 @@ Goals: Establish communication between AWS accounts and Hashicorp cloud instance
 - Created a VaultRole for AWS accounts that provides them with restricted privileges, in this case to only view their private key.
 - Tested the pipleine to look for any discrepancies for the logic between SNOW and hashicorp.
 - Worked on authenticating AWS accounts accessing private keys but encountered setbacks.
-- [Videos](https://www.youtube.com/watch?v=-2qdLIakimQ)
+- [Video](https://www.youtube.com/watch?v=-2qdLIakimQ)
 - [Slides](https://docs.google.com/presentation/d/1vAktVZfDj_IIzJEIMDabUJMM8wLFmot6a85i_a7I4LU/edit?slide=id.g3a286d58f66_0_0#slide=id.g3a286d58f66_0_0)
+
+## Sprint 5: AWS Authentication and Certificate Retrieval
+- For this sprint we wanted to ensure we were able to retrieve certificate information from a user's AWS account.
+- We were able to authenticate individual user accounts from AWS with our application.
+- Updated the GUI to provide more details and information the user can digest.
+- Implemented the revocation scheme to allow users to revoke certificates if they no longer need them. This calls a revoke API via hashicorp directly from the SNOW backend
+- Worked on adding a auto-renewal process in EC2 instances when certificates are updated so that users always have their latest certificate.
+- [Video](https://youtu.be/uU5UmmiCaWU)
+- [Slides](https://docs.google.com/presentation/d/17eIUfChpgMU3zHvkpkt6drcIUEuHpbUIxZGkd5uSkNA/edit?slide=id.g3a912a14aee_0_0#slide=id.g3a912a14aee_0_0)
 ---
 
 ## Appendix 
