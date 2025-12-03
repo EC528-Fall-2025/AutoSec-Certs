@@ -4,7 +4,7 @@ set -euo pipefail
 # To be ran periodically on an EC2 instance to poll for changed certificates. 
 # If a change is detected, the new certs are written to disk and the relevant service is reloaded.
 
-if [ "$#" -ne 1 ]; then
+if [ "$#" -lt 1 ]; then
     echo "Usage: $0 <app-name>" >&2
     exit 2
 fi
