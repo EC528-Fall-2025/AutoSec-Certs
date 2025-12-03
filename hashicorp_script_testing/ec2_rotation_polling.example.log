@@ -1,0 +1,116 @@
+[ec2-user@ip-172-31-44-60 test-app]$ journalctl -xeu cert-rotator.service
+Dec 03 23:10:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] APP_NAME=test-app
+Dec 03 23:10:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] AWS_ID=030853674829
+Dec 03 23:10:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] VAULT_AWS_ROLE=hashicorp-vault-access-role
+Dec 03 23:10:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] KV_PATH=certs/030853674829/hashicorp-vault-access-role/
+Dec 03 23:10:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] CERT_DIR=/home/ec2-user/test-app
+Dec 03 23:10:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] Authenticating to Vault using AWS IAM...
+Dec 03 23:10:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] vault login exit=0
+Dec 03 23:10:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] Login JSON preview: {
+Dec 03 23:10:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]:   "request_id": "8557b239-5c72-f70c-2bee-e604b3d576a1",
+Dec 03 23:10:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]:   "lease_id": "",
+Dec 03 23:10:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]:   "lease_duration": 0,
+Dec 03 23:10:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]:   "renewable": false,
+Dec 03 23:10:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]:   "data": null,
+Dec 03 23:10:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]:   "warnings": null,
+Dec 03 23:10:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]:   "auth": {
+Dec 03 23:10:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]:     "client_token": "hvs.CAESIO
+Dec 03 23:10:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] Extracted Vault token length: 108
+Dec 03 23:10:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] Fetching certificate from Vault KV path: certs/030853674829/hashicorp-vault-access-role/
+Dec 03 23:10:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] vault kv get exit=0
+Dec 03 23:10:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] DATA length: 20 bytes
+Dec 03 23:10:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] DATA preview: [
+Dec 03 23:10:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]:   "Test1CertNew"
+Dec 03 23:10:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: ]
+Dec 03 23:10:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] Parsing cert list from KV...
+Dec 03 23:10:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] Certificates found:
+Dec 03 23:10:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: Test1CertNew
+Dec 03 23:10:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] ----------------------------
+Dec 03 23:10:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] Processing certificate: Test1CertNew
+Dec 03 23:10:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] KV path: secret/certs/030853674829/hashicorp-vault-access-role/Test1CertNew
+Dec 03 23:10:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] ----------------------------
+Dec 03 23:10:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] Output cert path: /home/ec2-user/test-app/Test1CertNew.pem
+Dec 03 23:10:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] Output key path: /home/ec2-user/test-app/Test1CertNew.key
+Dec 03 23:10:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] CURRENT_HASH=0b4d8292272d8f98fd8520189ad166c0
+Dec 03 23:10:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] NEW_HASH=0b4d8292272d8f98fd8520189ad166c0
+Dec 03 23:10:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] No change for Test1CertNew
+Dec 03 23:10:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8522]: [DEBUG] No certificates updated, nothing to reload.
+Dec 03 23:10:28 ip-172-31-44-60.us-west-2.compute.internal systemd[1]: cert-rotator.service: Deactivated successfully.
+░░ Subject: Unit succeeded
+░░ Defined-By: systemd
+░░ Support: https://lists.freedesktop.org/mailman/listinfo/systemd-devel
+░░
+░░ The unit cert-rotator.service has successfully entered the 'dead' state.
+Dec 03 23:10:28 ip-172-31-44-60.us-west-2.compute.internal systemd[1]: Finished cert-rotator.service - Vault certificate rotation.
+░░ Subject: A start job for unit cert-rotator.service has finished successfully
+░░ Defined-By: systemd
+░░ Support: https://lists.freedesktop.org/mailman/listinfo/systemd-devel
+░░
+░░ A start job for unit cert-rotator.service has finished successfully.
+░░
+░░ The job identifier is 12843.
+Dec 03 23:10:28 ip-172-31-44-60.us-west-2.compute.internal systemd[1]: cert-rotator.service: Consumed 1.608s CPU time.
+░░ Subject: Resources consumed by unit runtime
+░░ Defined-By: systemd
+░░ Support: https://lists.freedesktop.org/mailman/listinfo/systemd-devel
+░░
+░░ The unit cert-rotator.service completed and consumed the indicated resources.
+[ec2-user@ip-172-31-44-60 test-app]$ journalctl -xeu cert-rotator.service
+Dec 03 23:15:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] APP_NAME=test-app
+Dec 03 23:15:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] AWS_ID=030853674829
+Dec 03 23:15:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] VAULT_AWS_ROLE=hashicorp-vault-access-role
+Dec 03 23:15:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] KV_PATH=certs/030853674829/hashicorp-vault-access-role/
+Dec 03 23:15:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] CERT_DIR=/home/ec2-user/test-app
+Dec 03 23:15:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] Authenticating to Vault using AWS IAM...
+Dec 03 23:15:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] vault login exit=0
+Dec 03 23:15:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] Login JSON preview: {
+Dec 03 23:15:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]:   "request_id": "ccb01dca-b112-cf9d-50ee-20993d6ea087",
+Dec 03 23:15:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]:   "lease_id": "",
+Dec 03 23:15:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]:   "lease_duration": 0,
+Dec 03 23:15:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]:   "renewable": false,
+Dec 03 23:15:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]:   "data": null,
+Dec 03 23:15:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]:   "warnings": null,
+Dec 03 23:15:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]:   "auth": {
+Dec 03 23:15:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]:     "client_token": "hvs.CAESIG
+Dec 03 23:15:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] Extracted Vault token length: 108
+Dec 03 23:15:27 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] Fetching certificate from Vault KV path: certs/030853674829/hashicorp-vault-access-role/
+Dec 03 23:15:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] vault kv get exit=0
+Dec 03 23:15:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] DATA length: 20 bytes
+Dec 03 23:15:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] DATA preview: [
+Dec 03 23:15:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]:   "Test1CertNew"
+Dec 03 23:15:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: ]
+Dec 03 23:15:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] Parsing cert list from KV...
+Dec 03 23:15:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] Certificates found:
+Dec 03 23:15:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: Test1CertNew
+Dec 03 23:15:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] ----------------------------
+Dec 03 23:15:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] Processing certificate: Test1CertNew
+Dec 03 23:15:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] KV path: secret/certs/030853674829/hashicorp-vault-access-role/Test1CertNew
+Dec 03 23:15:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] ----------------------------
+Dec 03 23:15:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] Output cert path: /home/ec2-user/test-app/Test1CertNew.pem
+Dec 03 23:15:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] Output key path: /home/ec2-user/test-app/Test1CertNew.key
+Dec 03 23:15:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] CURRENT_HASH=0b4d8292272d8f98fd8520189ad166c0
+Dec 03 23:15:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] NEW_HASH=0b4d8292272d8f98fd8520189ad166c0
+Dec 03 23:15:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] No change for Test1CertNew
+Dec 03 23:15:28 ip-172-31-44-60.us-west-2.compute.internal ec2_rotation_polling.sh[8756]: [DEBUG] No certificates updated, nothing to reload.
+Dec 03 23:15:28 ip-172-31-44-60.us-west-2.compute.internal systemd[1]: cert-rotator.service: Deactivated successfully.
+░░ Subject: Unit succeeded
+░░ Defined-By: systemd
+░░ Support: https://lists.freedesktop.org/mailman/listinfo/systemd-devel
+░░
+░░ The unit cert-rotator.service has successfully entered the 'dead' state.
+Dec 03 23:15:28 ip-172-31-44-60.us-west-2.compute.internal systemd[1]: Finished cert-rotator.service - Vault certificate rotation.
+░░ Subject: A start job for unit cert-rotator.service has finished successfully
+░░ Defined-By: systemd
+░░ Support: https://lists.freedesktop.org/mailman/listinfo/systemd-devel
+░░
+░░ A start job for unit cert-rotator.service has finished successfully.
+░░
+░░ The job identifier is 13484.
+Dec 03 23:15:28 ip-172-31-44-60.us-west-2.compute.internal systemd[1]: cert-rotator.service: Consumed 1.649s CPU time.
+░░ Subject: Resources consumed by unit runtime
+░░ Defined-By: systemd
+░░ Support: https://lists.freedesktop.org/mailman/listinfo/systemd-devel
+░░
+░░ The unit cert-rotator.service completed and consumed the indicated resources.
+[ec2-user@ip-172-31-44-60 test-app]$ ls
+Test1CertNew.key  Test1CertNew.meta.json  Test1CertNew.pem  Test1CertNew.serial
