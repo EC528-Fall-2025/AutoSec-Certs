@@ -4,14 +4,14 @@ set -euo pipefail
 # To be ran periodically on an EC2 instance to poll for changed certificates. 
 # If a change is detected, the new certs are written to disk and the relevant service is reloaded.
 
-# Detect AWS Account ID and IAM Role from instance metadata
-AWS_ID=$(aws sts get-caller-identity --query Account --output text)
-VAULT_AWS_ROLE=$(aws sts get-caller-identity --query Arn --output text | awk -F'/' '{print $2}')
-
-if [ "$#" -lt 1 ]; then
+if [ "$#" -ne 1 ]; then
     echo "Usage: $0 <app-name>" >&2
     exit 2
 fi
+
+# Detect AWS Account ID and IAM Role from instance metadata
+AWS_ID=$(aws sts get-caller-identity --query Account --output text)
+VAULT_AWS_ROLE=$(aws sts get-caller-identity --query Arn --output text | awk -F'/' '{print $2}')
 
 APP_NAME="$1"
 #AWS_ID="$2"
