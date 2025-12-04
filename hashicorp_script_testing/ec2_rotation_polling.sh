@@ -160,31 +160,41 @@ for CERT_NAME in $CERT_LIST; do
     else
         CURRENT_HASH=""
     fi
+    # Use the full SINGLE_DATA payload for change detection so any data change (cert, key, metadata) triggers updates
+    BUNDLE_FILE="$CERT_DIR/${CERT_NAME}.single.json"
+    if [[ -f "$BUNDLE_FILE" ]]; then
+        CURRENT_BUNDLE_HASH=$(sed 's/[[:space:]]*$//' "$BUNDLE_FILE" | md5sum | awk '{print $1}')
+    else
+        CURRENT_BUNDLE_HASH=""
+    fi
 
-    NEW_HASH=$(printf "%s" "$NEW_CERT" | sed 's/[[:space:]]*$//' | md5sum | awk '{print $1}')
+    NEW_BUNDLE_HASH=$(printf "%s" "$SINGLE_DATA" | sed 's/[[:space:]]*$//' | md5sum | awk '{print $1}')
 
-    echo "$(date -u +"%Y-%m-%dT%H:%M:%SZ") CURRENT_HASH=$CURRENT_HASH"
-    echo "$(date -u +"%Y-%m-%dT%H:%M:%SZ") NEW_HASH=$NEW_HASH"
+    echo "$(date -u +"%Y-%m-%dT%H:%M:%SZ") CURRENT_BUNDLE_HASH=$CURRENT_BUNDLE_HASH"
+    echo "$(date -u +"%Y-%m-%dT%H:%M:%SZ") NEW_BUNDLE_HASH=$NEW_BUNDLE_HASH"
 
-    if [[ "$CURRENT_HASH" != "$NEW_HASH" ]]; then
-        echo "$(date -u +"%Y-%m-%dT%H:%M:%SZ") Certificate $CERT_NAME changed, updating..."
+    if [[ "$CURRENT_BUNDLE_HASH" != "$NEW_BUNDLE_HASH" ]]; then
+        echo "$(date -u +"%Y-%m-%dT%H:%M:%SZ") SINGLE_DATA changed for $CERT_NAME, updating..."
 
         TMP_CERT=$(mktemp)
         TMP_KEY=$(mktemp)
         TMP_SERIAL=$(mktemp)
         TMP_META=$(mktemp)
+        TMP_BUNDLE=$(mktemp)
 
         printf "%s" "$NEW_CERT" > "$TMP_CERT"
         printf "%s" "$NEW_KEY" > "$TMP_KEY"
         printf "%s" "$NEW_SERIAL" > "$TMP_SERIAL"
         printf "%s" "$NEW_META" > "$TMP_META"
+        printf "%s" "$SINGLE_DATA" > "$TMP_BUNDLE"
 
-        chmod 600 "$TMP_CERT" "$TMP_KEY" "$TMP_SERIAL" "$TMP_META"
+        chmod 600 "$TMP_CERT" "$TMP_KEY" "$TMP_SERIAL" "$TMP_META" "$TMP_BUNDLE"
 
         mv "$TMP_CERT" "$CERT_FILE"
         mv "$TMP_KEY" "$KEY_FILE"
         mv "$TMP_SERIAL" "$SERIAL_FILE"
         mv "$TMP_META" "$META_FILE"
+        mv "$TMP_BUNDLE" "$BUNDLE_FILE"
 
         echo "$(date -u +"%Y-%m-%dT%H:%M:%SZ") [INFO] Updated $CERT_NAME (cert, key, serial, metadata)"
         CHANGED=1
