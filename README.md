@@ -248,7 +248,18 @@ Goals: Implement Revocation scheme and update any areas that needed to be fixed 
 - Worked on adding a auto-renewal process in EC2 instances when certificates are updated so that users always have their latest certificate.
 - [Video](https://youtu.be/uU5UmmiCaWU)
 - [Slides](https://docs.google.com/presentation/d/17eIUfChpgMU3zHvkpkt6drcIUEuHpbUIxZGkd5uSkNA/edit?slide=id.g3a912a14aee_0_0#slide=id.g3a912a14aee_0_0)
----
 
-## Appendix 
-- References  
+## Final Sprint: Full Integration
+Scrum Master: Ethan Liang
+
+Goals
+- Implemented rotation pattern, automatic rotations and automatic updates on EC2 instance
+- Extended revocation capability to detect on EC2 instance
+- Implemented and modify SNOW Scripts for rotation and revocation
+- Deployed our SNOW form on other group’s SNOW instances
+- Needed to redo HashiCorp Backend from scratch
+- Added individual account registration for each new AWS account
+- Updated Scripts in SNOW to fit new Vault structure
+- Provide full demo of the pipeline
+- [Video](https://www.youtube.com/watch?v=3NctCPJD7MQ)
+- [Slides](https://docs.google.com/presentation/d/1NsD5dyMyJEz2v-cS9wldk7UpC1lMFSThC30EMYtJnjU/edit?slide=id.g3aced006519_0_3078#slide=id.g3aced006519_0_3078)
