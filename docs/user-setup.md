@@ -96,7 +96,7 @@ This configures Vault to use the public cluster endpoint and the correct namespa
 Authenticate by running:
 
 ```sh
-vault login -method=aws role=<AWS_IAM_ROLE> header_value=vault.example.com
+vault login -method=aws role=<AWS_IAM_ROLE>
 ```
 
 The IAM role maps directly to a Vault role configured earlier. The `header_value` must match the server ID configured on the Vault side to prevent confused-deputy attacks.
