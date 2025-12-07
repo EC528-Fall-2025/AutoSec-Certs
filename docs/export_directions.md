@@ -31,6 +31,7 @@ Update Sets are ServiceNow's mechanism for moving configurations between instanc
 - ✅ Access to both ServiceNow instances (source and target)
 - ✅ Admin credentials for both instances
 - ✅ Both instances should ideally be on the same version to avoid compatibility issues
+- ✅ Don't work on the Default update set for production work
 
 ---
 
