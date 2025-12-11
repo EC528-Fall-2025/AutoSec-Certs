@@ -1,0 +1,227 @@
+<div class="cert-request-form-container">
+  <div class="form-card">
+    
+    <!-- Header -->
+    <div class="form-header">
+      <i class="fa fa-certificate fa-3x"></i>
+      <h2>Request Private Key Certificate</h2>
+      <p class="subtitle">Please fill in all required fields so your certificate can be generated.</p>
+    </div>
+
+    <div class="guidance-panel">
+      <h3>What we need and why - PKI Info</h3>
+      <p>This form collects PKI certificate information and AWS access details to generate your certificate. This includes:</p>
+      <ol>
+      	<li>Your name for traceback purposes.</li>
+      	<li>The domain name, which is the name of the website the certificate is being generated for.</li>
+      	<li>The organization that your website is associated with.</li>
+      	<li>The country code in which your organization is based out of, as well as State or province, and city.</li>
+      	<li>Optionally, you can also specify the duration oftime your certificate is valid for in the TTL field. By default we set this to one year.</li>
+      </ol>
+      </div>
+
+    <!-- Loading State -->
+    <div ng-if="c.submitting" class="loading-overlay">
+      <i class="fa fa-spinner fa-spin fa-3x"></i>
+      <p>Submitting your request...</p>
+    </div>
+
+    <!-- Form -->
+    <form ng-submit="c.submitForm()" ng-hide="c.submitting">
+      
+      <!-- PKI Information Section -->
+      <div class="form-section">
+        <h3><i class="fa fa-certificate"></i> PKI Information</h3>
+        
+        <!-- User's Full Name -->
+        <div class="form-group">
+          <label class="required">
+            <i class="fa fa-user"></i> User's Full Name
+          </label>
+          <input type="text" 
+                 class="form-control" 
+                 ng-model="c.formData.u_name"
+                 placeholder="John Doe"
+                 required>
+        </div>
+
+        <!-- Common Name (CN) -->
+        <div class="form-group">
+          <label class="required">
+            <i class="fa fa-globe"></i> Common Name (Domain Name)
+          </label>
+          <input type="text" 
+                 class="form-control" 
+                 ng-model="c.formData.u_common_name"
+                 placeholder="webserver.example.com"
+                 required>
+          <small class="help-text">The hostname or service name people will connect to.</small>
+        </div>
+
+        <!-- Certificate Name -->
+        <div class="form-group">
+          <label class="required">
+            <i class="fa fa-tag"></i> Certificate Name
+          </label>
+          <input type="text" 
+                 class="form-control" 
+                 ng-model="c.formData.u_cert_name"
+                 placeholder="My Web Server Certificate"
+                 required>
+          <small class="help-text">A friendly name to identify this certificate (e.g., "Production Web Server", "API Gateway Cert"). Cannot contain spaces.</small>
+        </div>
+
+        <!-- Organization -->
+        <div class="form-group">
+          <label class="required">
+            <i class="fa fa-building"></i> Organization
+          </label>
+          <input type="text" 
+                 class="form-control" 
+                 ng-model="c.formData.u_organization"
+                 placeholder="Example Corporation"
+                 required>
+        </div>
+
+        <!-- Country -->
+        <div class="form-group">
+          <label class="required">
+            <i class="fa fa-flag"></i> Country
+          </label>
+          <input type="text" 
+                 class="form-control" 
+                 ng-model="c.formData.u_country"
+                 placeholder="US"
+                 maxlength="2"
+                 pattern="[A-Z]{2}"
+                 required>
+          <small class="help-text">2-letter ISO country code (e.g., US, GB, AU)</small>
+        </div>
+
+        <!-- State/Province -->
+        <div class="form-group">
+          <label class="required">
+            <i class="fa fa-map-marker"></i> State/Province
+          </label>
+          <input type="text" 
+                 class="form-control" 
+                 ng-model="c.formData.u_state_province"
+                 placeholder="Massachusetts"
+                 required>
+        </div>
+
+        <!-- Locality (City) -->
+        <div class="form-group">
+          <label class="required">
+            <i class="fa fa-location-arrow"></i> Locality (City)
+          </label>
+          <input type="text" 
+                 class="form-control" 
+                 ng-model="c.formData.u_city"
+                 placeholder="Boston"
+                 required>
+        </div>
+
+        <!-- TTL -->
+        <div class="form-group">
+          <label>
+            <i class="fa fa-clock-o"></i> Time To Live (TTL) <span class="required">*</span>
+          </label>
+          <input type="number" 
+                 class="form-control" 
+                 ng-model="c.formData.u_time_to_live"
+                 placeholder="8760"
+                 min="1"
+                 ng-init="c.formData.u_time_to_live = 8760">
+          <small class="help-text">Certificate validity period in hours (default: 8760 hours = 1 year)</small>
+        </div>
+      </div>
+ 
+      <div class="guidance-panel">
+      <h3>What we need and why - AWS Info</h3>
+      <p>Now that we have that info, you may be wondering how to access your certificate and key once generated? This is where your AWS accounts will come in handy.</p>
+      <p>In order to view your private key (and certificate), we will need to link your AWS account to our secure vault. We will need: </p>
+      <ol>
+      	<li>Your AWS account ID.</li>
+      	<li>The SPECIFIC AWS role name WITHIN your AWS account that should have priveleges to view the key.</li>
+      </ol>
+      </div>
+      
+      <!-- AWS Access Section -->
+      <div class="form-section">
+        <h3><i class="fa fa-cloud"></i> AWS Access</h3>
+        
+        <!-- AWS ID -->
+        <div class="form-group">
+          <label class="required">
+            <i class="fa fa-id-card"></i> AWS Account ID
+          </label>
+          <input type="text" 
+                 class="form-control" 
+                 ng-model="c.formData.u_aws_id"
+                 placeholder="123456789012"
+                 pattern="\d{12}"
+                 maxlength="12"
+                 required>
+          <small class="help-text">12-digit AWS account ID</small>
+        </div>
+
+        <!-- AWS Role Name -->
+        <div class="form-group">
+          <label class="required">
+            <i class="fa fa-key"></i> AWS Role Name
+          </label>
+          <input type="text" 
+                 class="form-control" 
+                 ng-model="c.formData.u_aws_role_name"
+                 placeholder="web-cert-role"
+                 required>
+          <small class="help-text">The name of the IAM role that will use this certificate</small>
+        </div>
+      </div>
+
+      <!-- User Feedback Section -->
+      <div class="form-section">
+        <h3><i class="fa fa-envelope"></i> User Feedback</h3>
+        
+        <!-- Email Address -->
+        <div class="form-group">
+          <label class="required">
+            <i class="fa fa-envelope"></i> Email Address
+          </label>
+          <input type="email" 
+                 class="form-control" 
+                 ng-model="c.formData.u_email"
+                 placeholder="your.email@example.com"
+                 required>
+          <small class="help-text">We will send all certificate updates and renewals to this email address, so be sure to use a email address that won't go stale!</small>
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      <div class="alert alert-danger" ng-if="c.errorMessage">
+        <i class="fa fa-exclamation-triangle"></i>
+        <strong>Error:</strong> {{c.errorMessage}}
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" 
+              class="btn btn-primary btn-lg btn-block"
+              ng-disabled="c.submitting">
+        <i class="fa fa-paper-plane"></i>
+        Submit Certificate Request
+      </button>
+
+      <!-- Info Box -->
+      <div class="info-box">
+        <i class="fa fa-info-circle"></i>
+        <div>
+          <strong>What happens next?</strong>
+          <p>After submission, you'll receive portal credentials to track your certificate request status.</p>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+</div>

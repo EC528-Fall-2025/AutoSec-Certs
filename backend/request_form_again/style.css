@@ -1,0 +1,272 @@
+.cert-request-form-container {
+  min-height: 70vh;
+  padding: 40px 20px;
+  background: #1a1f2e;
+}
+
+.form-card {
+  max-width: 700px;
+  margin: 0 auto;
+  background: #252b3d;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Header */
+.form-header {
+  text-align: center;
+  margin-bottom: 35px;
+  
+  .fa-certificate {
+    color: #7c8ef5;
+    margin-bottom: 15px;
+  }
+  
+  h2 {
+    color: #e2e8f0;
+    margin: 15px 0 10px 0;
+    font-size: 28px;
+    font-weight: 600;
+  }
+  
+  .subtitle {
+    color: #94a3b8;
+    font-size: 15px;
+    margin: 0;
+  }
+}
+
+.guidance-panel {
+  background: #2d3447;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-bottom: 30px;
+  color: #cbd5e1;
+}
+
+.guidance-panel h3 {
+  margin: 0 0 12px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+/* Form Sections */
+.form-section {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.form-section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.form-section h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-section h3 .fa {
+  color: #7c8ef5;
+  font-size: 20px;
+}
+
+.guidance-panel p {
+  margin: 8px 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.guidance-panel ul {
+  padding-left: 18px;
+  margin: 12px 0 0 0;
+}
+
+.guidance-panel li {
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(37, 43, 61, 0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  z-index: 10;
+  
+  .fa-spinner {
+    color: #7c8ef5;
+    margin-bottom: 20px;
+  }
+  
+  p {
+    color: #cbd5e1;
+    font-size: 16px;
+  }
+}
+
+/* Form Groups */
+.form-group {
+  margin-bottom: 20px;
+  
+  label {
+    display: block;
+    font-weight: 500;
+    color: #cbd5e1;
+    margin-bottom: 8px;
+    font-size: 14px;
+    
+    &.required::after {
+      content: ' *';
+      color: #f87171;
+    }
+    
+    .fa {
+      margin-right: 6px;
+      color: #7c8ef5;
+      width: 16px;
+      text-align: center;
+    }
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    font-size: 15px;
+    background: #1e2432;
+    color: #e2e8f0;
+    transition: all 0.3s;
+    
+    &:focus {
+      border-color: #7c8ef5;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(124, 142, 245, 0.2);
+      background: #252b3d;
+    }
+    
+    &::placeholder {
+      color: #64748b;
+    }
+  }
+  
+  .help-text {
+    display: block;
+    margin-top: 5px;
+    color: #94a3b8;
+    font-size: 13px;
+  }
+}
+
+/* Alert */
+.alert {
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  
+  &.alert-danger {
+    background: rgba(248, 113, 113, 0.15);
+    color: #fca5a5;
+    border-left: 4px solid #f87171;
+  }
+  
+  .fa {
+    font-size: 18px;
+    margin-top: 2px;
+  }
+}
+
+/* Submit Button */
+.btn {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  
+  &.btn-primary {
+    background: #7c8ef5;
+    color: white;
+    box-shadow: 0 2px 8px rgba(124, 142, 245, 0.3);
+    
+    &:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(124, 142, 245, 0.4);
+      background: #8b9df6;
+    }
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+  
+  .fa {
+    margin-right: 8px;
+  }
+}
+
+/* Info Box */
+.info-box {
+  margin-top: 25px;
+  padding: 15px;
+  background: #2d3447;
+  border-radius: 6px;
+  border-left: 4px solid #7c8ef5;
+  display: flex;
+  gap: 12px;
+  
+  .fa {
+    color: #7c8ef5;
+    font-size: 20px;
+    margin-top: 2px;
+  }
+  
+  strong {
+    display: block;
+    color: #e2e8f0;
+    margin-bottom: 5px;
+  }
+  
+  p {
+    margin: 0;
+    color: #cbd5e1;
+    font-size: 14px;
+  }
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .form-card {
+    padding: 25px;
+  }
+  
+  .form-header h2 {
+    font-size: 24px;
+  }
+}
